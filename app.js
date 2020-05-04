@@ -4,14 +4,14 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const jwt = require("jsonwebtoken");
-
+var http = require('http');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var enDecryptRouter = require('./routes/endecrypt');
 var keyinfoRouter = require('./routes/keyinfo');
 
 var app = express();
-
+var server = http.createServer(app);
 var crypt = require("./endecrypt/crypt");
 
 
@@ -132,5 +132,10 @@ function authenticateToken(req, res, next) {
     }
 
 }
+
+server.listen(3030);
+server.on('listening', function() {
+    console.log('Server started on port %s at %s', server.address().port, server.address().address);
+});
 
 module.exports = app;
