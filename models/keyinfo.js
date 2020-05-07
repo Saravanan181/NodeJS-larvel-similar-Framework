@@ -6,7 +6,7 @@ const keyinfo = function() {
 
 };
 
-keyinfo.info = (info,callback) => {
+keyinfo.hospitalinfo = (info,callback) => {
 
     sql.query("SELECT * FROM users where email_id =? and otp=?",
         [info.email, info.otp], (err, userData) => {

@@ -9,7 +9,7 @@ const users = function(users) {
 };
 
 users.info = (info,callback) => {
-
+    console.log('ddd');
     sql.query("SELECT * FROM users where email_id =? and otp=?",
         [info.email, info.otp], (err, userData) => {
         if(err) {
