@@ -1,5 +1,5 @@
 const sql = require("./mysqlconnect.js");
-
+var middleware = require('../middleware/reqresmiddleware');
 
 // constructor
 const users = function(users) {
@@ -8,21 +8,41 @@ const users = function(users) {
     this.username = users.username;
 };
 
-users.info = (info,callback) => {
-    console.log('ddd');
-    sql.query("SELECT * FROM users where email_id =? and otp=?",
-        [info.email, info.otp], (err, userData) => {
-        if(err) {
-            console.log("error: ", err);
-            result(err, null);
-            return;
-        }else{
+users.info = (info,req,res, callback) => {
 
-                callback(userData);
+    sql.getConnection(function(err, connection) {
 
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{}
+        // console.log('ddd');
+        connection.query("SELECT * FROM users where email_id =? and otp=?",
+            [info.email, info.otp], (err, userData) => {
+            if(err) {
+                res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                middleware.beforeresponse(req,res);
+            }else{
+                    connection.end();
+                    callback(userData);
 
-        }
+            }
+        });
     });
+
+    // console.log('ddd');
+    // sql.query("SELECT * FROM users where email_id =? and otp=?",
+    //     [info.email, info.otp], (err, userData) => {
+    //     if(err) {
+    //         console.log("error: ", err);
+    //         result(err, null);
+    //         return;
+    //     }else{
+    //
+    //             callback(userData);
+    //
+    //     }
+    // });
 
 }
 

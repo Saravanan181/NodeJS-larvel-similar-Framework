@@ -4,7 +4,7 @@ var assert = require('assert');
 
 var algorithm = 'aes-256-cbc';
 const IV = "5183666c72eec9e4";
-
+const IV_LENGTH = 16;
 var key = 'NNbGOFx4Db16i21c6RSbLEgoTSOLRgdk';
 
 // constructor

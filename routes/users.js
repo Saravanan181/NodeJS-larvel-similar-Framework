@@ -10,7 +10,7 @@ router.post('/login', function(req, res, next) {
     var data = req.body.data;
     var Userinfo = {email:data.email, otp:data.otp};
 
-    Users.info(Userinfo,function(userDetails){
+    Users.info(Userinfo,req,res,function(userDetails){
 
         if(Array.isArray(userDetails) && userDetails.length){
 

@@ -6,6 +6,8 @@ var morgan = require('morgan');
 const jwt = require("jsonwebtoken");
 var logconf = require('./config/logconf');
 
+
+var middleware = require('./middleware/reqresmiddleware');
 var http = require('http');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
@@ -16,7 +18,7 @@ var logRouter = require('./routes/logaccess');
 
 var app = express();
 var server = http.createServer(app);
-var crypt = require("./endecrypt/crypt");
+
 // const errorLog = require('./config/log').errorlog;
 // const successlog = require('./config/log').successlog;
 
@@ -73,7 +75,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 
 // users details
-app.use('/users',authenticateToken,middlewarebeforerequest, usersRouter, middlewareafterrequest);
+app.use('/users',authenticateToken,middleware.afterrequest, usersRouter, middleware.beforeresponse);
 app.use('/keyinfo',authenticateToken,middlewarebeforerequest, usersRouter, middlewareafterrequest);
 
 //keyinfo details
@@ -149,9 +151,9 @@ function authenticateToken(req, res, next) {
 
 }
 
-// server.listen(3030);
-// server.on('listening', function() {
-//     console.log('Server started on port %s at %s', server.address().port, server.address().address);
-// });
+server.listen(3000);
+server.on('listening', function() {
+    console.log('Server started on port %s at %s', server.address().port, server.address().address);
+});
 
 module.exports = app;

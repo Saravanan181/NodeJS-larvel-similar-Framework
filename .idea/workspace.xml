@@ -2,25 +2,18 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6570f21e-dd11-4912-824f-f6eb99022b00" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/config/logconf.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/routes/logaccess.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/views/filereader.jade" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/middleware/reqresmiddleware.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/ethos_new.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/ethos_new.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/ethos.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/ethos.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/endecrypt/crypt.js" beforeDir="false" afterPath="$PROJECT_DIR$/endecrypt/crypt.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models/keyinfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/keyinfo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logs/access2020-05-07.log" beforeDir="false" afterPath="$PROJECT_DIR$/logs/access2020-05-07.log" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/mysqlconnect.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/mysqlconnect.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/users.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/keyinfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/keyinfo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/views/index.jade" beforeDir="false" afterPath="$PROJECT_DIR$/views/index.jade" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -84,7 +77,7 @@
       <workItem from="1588836901462" duration="595000" />
       <workItem from="1588849900740" duration="712000" />
       <workItem from="1588850816517" duration="2170000" />
-      <workItem from="1588853402331" duration="10167000" />
+      <workItem from="1588853402331" duration="18417000" />
     </task>
     <servers />
   </component>
@@ -92,6 +85,10 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
+    <state x="380" y="220" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1589020062951">
+      <screen x="61" y="23" width="1219" height="777" />
+    </state>
+    <state x="380" y="220" key="#com.intellij.fileTypes.FileTypeChooser/61.23.1219.777@61.23.1219.777" timestamp="1589020062951" />
     <state width="1162" height="190" key="GridCell.Tab.0.bottom" timestamp="1588853588395">
       <screen x="76" y="23" width="1204" height="777" />
     </state>
@@ -108,5 +105,9 @@
       <screen x="76" y="23" width="1204" height="777" />
     </state>
     <state width="1162" height="190" key="GridCell.Tab.0.right/76.23.1204.777@76.23.1204.777" timestamp="1588853588394" />
+    <state x="343" y="124" key="search.everywhere.popup" timestamp="1589020944109">
+      <screen x="61" y="23" width="1219" height="777" />
+    </state>
+    <state x="343" y="124" key="search.everywhere.popup/61.23.1219.777@61.23.1219.777" timestamp="1589020944109" />
   </component>
 </project>
