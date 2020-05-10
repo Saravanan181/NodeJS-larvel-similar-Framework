@@ -23,43 +23,6 @@ var server = http.createServer(app);
 // const successlog = require('./config/log').successlog;
 
 
-//middleware decrypt before passing to controller
-var middlewarebeforerequest = function (req, res, next) {
-
-    // successlog.info(`Success Message and variables: ${req.body.data}`);
-// Save log to custom log file "my-log.log".
-
-    if(req.body.data){
-        var data = req.body.data;
-        crypt.decrypt(data,function(decrypted){
-            var logdata = {"type":'access',"data":decrypted,"customsg":req.path + ' "path requested - requested Data" '};
-            logconf.writelog(logdata);
-            req.body.data = JSON.parse(decrypted);
-            next()
-        });
-    }else{
-        next()
-    }
-
-}
-
-//middleware encrypt before passing to response
-var middlewareafterrequest = function (req, res) {
-
-    var data = res.sendData;res.sendData = '';
-    var statuscode = data.statuscode;
-console.log('ddd');
-    crypt.encrypt(JSON.stringify(data),function(encryptData){
-
-        var logdata = {"type":'access',"data":JSON.stringify(data),"customsg":req.path + ' "path requested - response Data" '};
-        logconf.writelog(logdata);
-
-        res.status(statuscode).json({"data":encryptData});
-    });
-
-}
-
-
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
@@ -76,7 +39,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // users details
 app.use('/users',authenticateToken,middleware.afterrequest, usersRouter, middleware.beforeresponse);
-app.use('/keyinfo',authenticateToken,middlewarebeforerequest, usersRouter, middlewareafterrequest);
+app.use('/keyinfo',authenticateToken,middleware.afterrequest, keyinfoRouter, middleware.beforeresponse);
 
 //keyinfo details
 

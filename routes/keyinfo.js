@@ -5,18 +5,17 @@ const keyinfo = require("../models/keyinfo");
 
 
 /* GET users listing. */
-router.post('/hospital/:id', function(req, res, next) {
+router.get('/hospital/:id', function(req, res, next) {
 
     var hospital_id = req.params.id;
 
 
-    keyinfo.hospitalinfo(hospital_id,function(keyinfoattributes){
+    keyinfo.hospitalinfo(hospital_id,function(keyinfoDetails,keycategoryDetails){
 
+        var details = {statuscode:200,"keyinfoDetails":keyinfoDetails,"keycategoryDetails":keycategoryDetails};
+        res.sendData = details;
+        next();
 
-
-
-
-        console.log("Return from ctlUser" + userDetails);
     });
 
 });

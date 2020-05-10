@@ -26,7 +26,7 @@ reqresmiddleware.beforeresponse = (req,res) => {
 
     var data = res.sendData;res.sendData = '';
     var statuscode = data.statuscode;
-    console.log('ddd');
+    console.log('d');
     crypt.encrypt(JSON.stringify(data),function(encryptData){
 
         var logdata = {"type":'access',"data":JSON.stringify(data),"customsg":req.path + ' "path requested - response Data" '};
