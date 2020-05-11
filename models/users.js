@@ -11,7 +11,6 @@ const users = function(users) {
 users.info = (info,req,res, callback) => {
 
     sql.getConnection(function(err, connection) {
-
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
@@ -31,7 +30,7 @@ users.info = (info,req,res, callback) => {
 
 }
 
-users.hospital = (info,callback) => {
+users.hospital = (info,req,res, callback) => {
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
@@ -50,6 +49,26 @@ users.hospital = (info,callback) => {
                     callback(hospitalList);
                 }
             });
+    });
+}
+
+users.validateUser = (info,req,res, callback) => {
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+            connection.query("SELECT * FROM users where email_id =?",
+                [info.username], (err, userData) => {
+                    if(err) {
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.end();
+                        callback(userData);
+                    }
+                });
+        }
     });
 }
 

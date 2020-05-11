@@ -6,15 +6,21 @@ var morgan = require('morgan');
 const jwt = require("jsonwebtoken");
 var logconf = require('./config/logconf');
 
-
+//middleware
 var middleware = require('./middleware/reqresmiddleware');
 var http = require('http');
+
+//routes - controller
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var enDecryptRouter = require('./routes/endecrypt');
 var keyinfoRouter = require('./routes/keyinfo');
 var logRouter = require('./routes/logaccess');
 
+
+
+//models
+var userModel = require('./models/users');
 
 var app = express();
 var server = http.createServer(app);
@@ -74,39 +80,35 @@ function authenticateToken(req, res, next) {
     }else{
 
         // console.log(req.headers);
-
-        // Gather the jwt access token from the request header
-        var Userinfo = {msg:"Authentication Not present",status_code:401};
-
         if(!req.headers['authorization']){
-            res.json({"msg":"Token Missing","statuscode":403});
+            res.sendData  = {"msg":"Token Missing","statuscode":403};
+            middleware.beforeresponse(req,res);
         }
         //
         const authHeader = req.headers['authorization'];
-
-        if(authHeader==''){
-            res.json({"msg":"Token Missing","statuscode":403});
-        }
         //
         const token = authHeader && authHeader.split(' ')[1];
         if (token == null){
-            var Userinfo = {msg:"Authentication Not present",status_code:401};
-            res.json(Userinfo);
+            res.sendData  = {msg:"Authentication Not present",status_code:401};
+            middleware.beforeresponse(req,res);
         }
-
-        // if(jwt.verify(token, 'nodeethos576asdas6')){
-        //     console.log('verified');
-        // }else{
-        //     console.log('not verified');
-        // }
-
 
         jwt.verify(token, 'nodeethos576asdas6', (err, user) => {
             if (err){
-                res.json({"msg":"Invalid Token","statuscode":403});
+                res.sendData  = {"msg":"Invalid Token","statuscode":403};
+                middleware.beforeresponse(req,res);
             }else{
-        next();
-    }
+
+                userModel.validateUser(user,req,res,function(userDetails){
+                    if(userDetails[0].email_id===user.username){
+                        next();
+                    }else{
+                        res.sendData  = {"msg":"Invalid User","statuscode":401};
+                        middleware.beforeresponse(req,res);
+                    }
+                });
+
+            }
         // pass the execution off to whatever request the client intended
     });
 

@@ -41,7 +41,7 @@ router.get('/hospitals', function(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1];
     var userInfo = jwt.verify(token, 'nodeethos576asdas6');
 
-    Users.hospital(userInfo.physican_id,function(hospitalList){
+    Users.hospital(userInfo.physican_id,req,res,function(hospitalList){
 
             var HospitalList = {statuscode:200,msg:"Hospital List",list:hospitalList};
             res.sendData = HospitalList;
