@@ -75,50 +75,50 @@ app.use(function(err, req, res, next) {
 function authenticateToken(req, res, next) {
 
 // console.log(req.path);
-    if(req.path == '/login'){
+//     if(req.path == '/login'){
         next()
-    }else{
-
-        // console.log(req.headers);
-        if(!req.headers['authorization']){
-            res.sendData  = {"msg":"Token Missing","statuscode":403};
-            middleware.beforeresponse(req,res);
-        }
-        //
-        const authHeader = req.headers['authorization'];
-        //
-        const token = authHeader && authHeader.split(' ')[1];
-        if (token == null){
-            res.sendData  = {msg:"Authentication Not present",status_code:401};
-            middleware.beforeresponse(req,res);
-        }
-
-        jwt.verify(token, 'nodeethos576asdas6', (err, user) => {
-            if (err){
-                res.sendData  = {"msg":"Invalid Token","statuscode":403};
-                middleware.beforeresponse(req,res);
-            }else{
-
-                userModel.validateUser(user,req,res,function(userDetails){
-                    if(userDetails[0].email_id===user.username){
-                        next();
-                    }else{
-                        res.sendData  = {"msg":"Invalid User","statuscode":401};
-                        middleware.beforeresponse(req,res);
-                    }
-                });
-
-            }
-        // pass the execution off to whatever request the client intended
-    });
-
-    }
+//     }else{
+//
+//         // console.log(req.headers);
+//         if(!req.headers['authorization']){
+//             res.sendData  = {"msg":"Token Missing","statuscode":403};
+//             middleware.beforeresponse(req,res);
+//         }
+//         //
+//         const authHeader = req.headers['authorization'];
+//         //
+//         const token = authHeader && authHeader.split(' ')[1];
+//         if (token == null){
+//             res.sendData  = {msg:"Authentication Not present",status_code:401};
+//             middleware.beforeresponse(req,res);
+//         }
+//
+//         jwt.verify(token, 'nodeethos576asdas6', (err, user) => {
+//             if (err){
+//                 res.sendData  = {"msg":"Invalid Token","statuscode":403};
+//                 middleware.beforeresponse(req,res);
+//             }else{
+//
+//                 userModel.validateUser(user,req,res,function(userDetails){
+//                     if(userDetails[0].email_id===user.username){
+//                         next();
+//                     }else{
+//                         res.sendData  = {"msg":"Invalid User","statuscode":401};
+//                         middleware.beforeresponse(req,res);
+//                     }
+//                 });
+//
+//             }
+//         // pass the execution off to whatever request the client intended
+//     });
+//
+//     }
 
 }
 
-server.listen(3000);
-server.on('listening', function() {
-    console.log('Server started on port %s at %s', server.address().port, server.address().address);
-});
+// server.listen(3000);
+// server.on('listening', function() {
+//     console.log('Server started on port %s at %s', server.address().port, server.address().address);
+// });
 
 module.exports = app;

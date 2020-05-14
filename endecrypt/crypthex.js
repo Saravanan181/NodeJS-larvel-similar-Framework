@@ -8,28 +8,28 @@ const IV_LENGTH = 16;
 var key = 'NNbGOFx4Db16i21c6RSbLEgoTSOLRgdk';
 
 // constructor
-const crypt = function(cryptData) {
+const crypthex = function(cryptData) {
     this.algorithm = 'aes256';
     this.key = 'NNbGOFx4Db16i21c6RSbLEgoTSOLRgdk';
 };
 
 
-crypt.encrypt = (data,callback) => {
+crypthex.encrypt = (data,callback) => {
 console.log(data);
     var cipher = crypto.createCipheriv(algorithm, key, IV );
-    let encrypted = cipher.update(data, 'utf8', 'base64');
-     encrypted += cipher.final('base64');
+    let encrypted = cipher.update(data, 'utf8', 'hex');
+     encrypted += cipher.final('hex');
     callback(encrypted);
 
 }
 
-crypt.decrypt = (data,callback) => {
+crypthex.decrypt = (data,callback) => {
 
     let decipher = crypto.createDecipheriv(algorithm, key, IV);
-    let decrypted = decipher.update(data, 'base64', 'utf8');
+    let decrypted = decipher.update(data, 'hex', 'utf8');
     callback(decrypted + decipher.final('utf8'));
 
 }
 
 
-module.exports = crypt;
+module.exports = crypthex;

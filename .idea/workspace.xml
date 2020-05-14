@@ -2,15 +2,21 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6570f21e-dd11-4912-824f-f6eb99022b00" name="Default" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/ethos_new.iml" beforeDir="false" afterPath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/ethos_new.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/modules.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/vcs.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/appconstant.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/config/databaseconstant.js" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/traits/sendmail.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app.js" beforeDir="false" afterPath="$PROJECT_DIR$/app.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/endecrypt/crypt.js" beforeDir="false" afterPath="$PROJECT_DIR$/endecrypt/crypt.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/endecrypt/crypthex.js" beforeDir="false" afterPath="$PROJECT_DIR$/endecrypt/crypthex.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/keyinfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/keyinfo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models/mysqlconnect.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/mysqlconnect.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/models/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/models/users.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/routes/users.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/users.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/endecrypt.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/endecrypt.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/keyinfo.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/keyinfo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/routes/logaccess.js" beforeDir="false" afterPath="$PROJECT_DIR$/routes/logaccess.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,17 +43,18 @@
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/endecrypt" />
     <property name="nodejs_interpreter_path" value="/usr/local/bin/node" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="fileTemplates" />
   </component>
   <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/endecrypt" />
+      <recent name="$PROJECT_DIR$/models" />
+    </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/routes" />
-    </key>
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/models" />
     </key>
   </component>
   <component name="SvnConfiguration">
@@ -76,7 +83,7 @@
       <workItem from="1588850816517" duration="2170000" />
       <workItem from="1588853402331" duration="18883000" />
       <workItem from="1589132772743" duration="5050000" />
-      <workItem from="1589178702424" duration="3711000" />
+      <workItem from="1589178702424" duration="27291000" />
     </task>
     <servers />
   </component>
@@ -84,10 +91,15 @@
     <option name="version" value="2" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="380" y="220" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1589020062951">
-      <screen x="61" y="23" width="1219" height="777" />
+    <state x="382" y="220" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1589455734736">
+      <screen x="64" y="23" width="1216" height="777" />
     </state>
     <state x="380" y="220" key="#com.intellij.fileTypes.FileTypeChooser/61.23.1219.777@61.23.1219.777" timestamp="1589020062951" />
+    <state x="382" y="220" key="#com.intellij.fileTypes.FileTypeChooser/64.23.1216.777@64.23.1216.777" timestamp="1589455734736" />
+    <state x="512" y="173" key="FileChooserDialogImpl" timestamp="1589189854607">
+      <screen x="64" y="23" width="1216" height="777" />
+    </state>
+    <state x="512" y="173" key="FileChooserDialogImpl/64.23.1216.777@64.23.1216.777" timestamp="1589189854607" />
     <state width="1162" height="190" key="GridCell.Tab.0.bottom" timestamp="1589023932375">
       <screen x="61" y="23" width="1219" height="777" />
     </state>
@@ -108,13 +120,14 @@
     </state>
     <state width="1162" height="190" key="GridCell.Tab.0.right/61.23.1219.777@61.23.1219.777" timestamp="1589023932373" />
     <state width="1162" height="190" key="GridCell.Tab.0.right/76.23.1204.777@76.23.1204.777" timestamp="1588853588394" />
-    <state x="379" y="166" width="612" height="490" key="find.popup" timestamp="1589184416401">
+    <state x="379" y="166" width="690" height="490" key="find.popup" timestamp="1589189864877">
       <screen x="64" y="23" width="1216" height="777" />
     </state>
-    <state x="379" y="166" width="612" height="490" key="find.popup/64.23.1216.777@64.23.1216.777" timestamp="1589184416401" />
-    <state x="343" y="124" key="search.everywhere.popup" timestamp="1589020944109">
-      <screen x="61" y="23" width="1219" height="777" />
+    <state x="379" y="166" width="690" height="490" key="find.popup/64.23.1216.777@64.23.1216.777" timestamp="1589189864877" />
+    <state x="345" y="124" width="670" height="676" key="search.everywhere.popup" timestamp="1589455422045">
+      <screen x="64" y="23" width="1216" height="777" />
     </state>
     <state x="343" y="124" key="search.everywhere.popup/61.23.1219.777@61.23.1219.777" timestamp="1589020944109" />
+    <state x="345" y="124" width="670" height="676" key="search.everywhere.popup/64.23.1216.777@64.23.1216.777" timestamp="1589455422045" />
   </component>
 </project>
