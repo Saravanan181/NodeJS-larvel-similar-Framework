@@ -19,7 +19,7 @@ keyinfo.hospitalinfo = (hospital_id,callback) => {
                         res.sendData = {"msg":'Server under maintaince',"statuscode":503};
                         middleware.beforeresponse(req,res);
                     }else{
-                        connection.end();
+                        connection.release();
                         connection.query("SELECT id,block_name FROM `hospital_category` WHERE `hospital_id` = ? ORDER BY `hospital_category`.`id` ASC",
                             [hospital_id], (err, keycategoryDetails) => {
                                 if(err) {
@@ -61,14 +61,9 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                 if(Array.isArray(imageInfo) && imageInfo.length){
                                     for(var pIloop=0;pIloop<imageInfo.length;pIloop++)
                                     {
-                                        // if(imageInfo[pIloop]){
-                                        //     crypthex.encrypt(JSON.stringify(imageInfo[pIloop]),function(encryptImageInfo){
-
                                                 imageDetails[pIloop] = {
                                                     "name":appconstant.SECTIONLISTURL+imageInfo[pIloop]
                                                 };
-                                        //     });
-                                        // }
                                     }
                                 }
 
@@ -86,6 +81,31 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
         }
     });
 }
+
+
+
+keyinfo.hospitalfeedbackmail = (hospital_id,req,res, callback) => {
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+            connection.query("SELECT hospital_feedback_email FROM `hospital_list` WHERE `hospital_id` = ?",
+                [hospital_id], (err, hospital_feedback_email) => {
+                    if(err) {
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+                        callback(hospital_feedback_email[0].hospital_feedback_email);
+                    }
+                });
+        }
+    });
+}
+
+
+
 
 
 module.exports = keyinfo;

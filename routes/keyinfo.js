@@ -9,13 +9,11 @@ var smtp = require("../traits/sendmail")
 /* GET users listing. */
 router.get('/hospital/:id', function(req, res, next) {
     var hospital_id = req.params.id;
-    crypthex.decrypt(hospital_id,function(decryptHospitalId){console.log(decryptHospitalId);
-        keyinfo.hospitalinfo(decryptHospitalId,function(keyinfoDetails,keycategoryDetails){
+        keyinfo.hospitalinfo(crypthex.decrypt(hospital_id),function(keyinfoDetails,keycategoryDetails){
             var details = {statuscode:200,"keyinfoDetails":keyinfoDetails,"keycategoryDetails":keycategoryDetails};
             res.sendData = details;
             next();
         });
-    });
 });
 
 router.get('/sectionlist/:id/:pageno', function(req, res, next) {
@@ -31,13 +29,15 @@ router.get('/sectionlist/:id/:pageno', function(req, res, next) {
 });
 
 router.post('/sendfeedback', function(req, res, next) {
-
     var data = req.body.data;
-
-    console.log(data);
-
-    smtp.send(data,function(){
-
+    data.hospital_id = crypthex.decrypt(data.hospital_id);
+    keyinfo.hospitalfeedbackmail(data.hospital_id,req,res, function(feedbackmail){
+        console.log(feedbackmail);
+        data.feedbackmail = 'saravanan.j@innoppl.com';
+        // var sendInfo = smtp.send(data);
+        var details = {statuscode:200,"msg":'feedback send successfully'};
+        res.sendData = details;
+        next();
     });
 });
 

@@ -14,20 +14,19 @@ const crypthex = function(cryptData) {
 };
 
 
-crypthex.encrypt = (data,callback) => {
-console.log(data);
+crypthex.encrypt = (data) => {
+
     var cipher = crypto.createCipheriv(algorithm, key, IV );
     let encrypted = cipher.update(data, 'utf8', 'hex');
-     encrypted += cipher.final('hex');
-    callback(encrypted);
+    return encrypted += cipher.final('hex');
 
 }
 
-crypthex.decrypt = (data,callback) => {
+crypthex.decrypt = (data) => {
 
     let decipher = crypto.createDecipheriv(algorithm, key, IV);
     let decrypted = decipher.update(data, 'hex', 'utf8');
-    callback(decrypted + decipher.final('utf8'));
+    return decrypted + decipher.final('utf8');
 
 }
 

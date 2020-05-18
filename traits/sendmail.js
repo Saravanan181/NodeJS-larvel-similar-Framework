@@ -6,7 +6,7 @@ const sendmail = function() {
 };
 
 
-sendmail.send = (data,callback) => {
+sendmail.send = (data) => {
 
     let transporter = nodemailer.createTransport({
         host: 'smtp.gmail.com',
@@ -19,18 +19,14 @@ sendmail.send = (data,callback) => {
     });
 
     let info = transporter.sendMail({
-        from: 'saravagmail.com', // sender address
-        to: "saravanan.j@innoppl.com", // list of receivers
+        from: 'eagletelemedicine@noreply.com', // sender address
+        to: data.feedbackmail, // list of receivers
         subject: data.title, // Subject line
         // text: "Hello world?", // plain text body
         html: data.subject // html body
     });
 
-    console.log("Message sent: %s", info);
-    // Message sent: <b658f8ca-6296-ccf4-8306-87d57a0b4321@example.com>
-
-    // Preview only available when sending through an Ethereal account
-    console.log("Preview URL: %s", nodemailer.getTestMessageUrl(info));
+    // return info;
 
 }
 

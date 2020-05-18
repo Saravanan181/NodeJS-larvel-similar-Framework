@@ -6,7 +6,6 @@ const reqresmiddleware = function() {
 };
 
 reqresmiddleware.afterrequest =  (req, res, next) => {
-
     if(req.body.data){
         var data = req.body.data;
         crypt.decrypt(data,function(decrypted){
@@ -18,23 +17,16 @@ reqresmiddleware.afterrequest =  (req, res, next) => {
     }else{
         next()
     }
-
 }
 
 reqresmiddleware.beforeresponse = (req,res) => {
-
-
     var data = res.sendData;res.sendData = '';
     var statuscode = data.statuscode;
-    console.log('d');
     crypt.encrypt(JSON.stringify(data),function(encryptData){
-
         var logdata = {"type":'access',"data":JSON.stringify(data),"customsg":req.path + ' "path requested - response Data" '};
         logconf.writelog(logdata);
-
         res.status(statuscode).json({"data":encryptData});
     });
-
 }
 
 module.exports = reqresmiddleware;
