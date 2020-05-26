@@ -62,8 +62,7 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                     for(var pIloop=0;pIloop<imageInfo.length;pIloop++)
                                     {
                                                 imageDetails[pIloop] = {
-                                                    "name":imageInfo[pIloop],
-                                                    "link":appconstant.SECTIONLISTURL+imageInfo[pIloop]
+                                                    "name":appconstant.SECTIONLISTURL+imageInfo[pIloop]
                                                 };
                                     }
                                 }
@@ -72,7 +71,7 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                     "section_id":rows[pLoop].id,
                                     "section_name":rows[pLoop].item_name,
                                     "section_description":rows[pLoop].item_description,
-                                    "image_details": imageDetails
+                                    "files_path": imageDetails
                                 };
                             }
                         }
