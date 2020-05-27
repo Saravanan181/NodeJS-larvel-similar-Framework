@@ -72,7 +72,8 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                     "section_id":rows[pLoop].id,
                                     "section_name":rows[pLoop].item_name,
                                     "section_description":rows[pLoop].item_description,
-                                    "image_details": imageDetails
+                                    "image_details": imageDetails,
+                                    "overalldownload" : appconstant.SECTIONOVERLLDOWNLOAD+rows[pLoop].id
                                 };
                             }
                         }
