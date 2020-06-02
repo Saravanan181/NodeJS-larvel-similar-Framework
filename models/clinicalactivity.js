@@ -1,111 +1,186 @@
 const sql = require("./mysqlconnect.js");
 var middleware = require('../middleware/reqresmiddleware');
 var crypthex = require("../endecrypt/crypthex");
-var appconstant = require("../config/appconstant")
+var appconstant = require("../config/appconstant");
+var common = require("../traits/common");
 // constructor
-const keyinfo = function() {
+const clinicalactivity = function() {
 
 };
 
-keyinfo.hospitalinfo = (hospital_id,callback) => {
+clinicalactivity.encounterinfo = (hospital_id,req,res, callback) => {
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT key_param,key_value FROM `hospital_keyinfo` WHERE `hospital_id` = ? and type = ? ORDER BY `hospital_keyinfo`.`id` ASC",
-                [hospital_id,0], (err, keyinfoDetails) => {
+            connection.query("SELECT encounter_type,id FROM `hospital_encounter_type` WHERE `hospital_id` = ? ORDER BY `hospital_encounter_type`.`encounter_name` ASC",
+                [hospital_id,0], (err, encounterTypes) => {
                     if(err) {
                         res.sendData = {"msg":'Server under maintaince',"statuscode":503};
                         middleware.beforeresponse(req,res);
                     }else{
                         connection.release();
-                        connection.query("SELECT id,block_name FROM `hospital_category` WHERE `hospital_id` = ? ORDER BY `hospital_category`.`id` ASC",
-                            [hospital_id], (err, keycategoryDetails) => {
-                                if(err) {
-                                    res.sendData = {"msg":'Server under maintaince',"statuscode":503};
-                                    middleware.beforeresponse(req,res);
-                                }else{
-                                    connection.release();
-                                    callback(keyinfoDetails,keycategoryDetails);
-                                }
-                            });
+                        callback(encounterTypes.insertId);
                     }
                 });
         }
     });
 }
 
-
-keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
+clinicalactivity.codes = (req,res, callback) => {
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT * FROM `hospital_category_item` WHERE `category_id` = ? and status = ? limit ?,?",
-                [category_id,0,limit,items_page], (err, rows) => {
+            connection.query("SELECT encounter_type,id FROM `hospital_encounter_type` WHERE `hospital_id` = ? ORDER BY `hospital_encounter_type`.`encounter_name` ASC",
+                [hospital_id,0], (err, encounterTypes) => {
                     if(err) {
                         res.sendData = {"msg":'Server under maintaince',"statuscode":503};
                         middleware.beforeresponse(req,res);
                     }else{
                         connection.release();
-                        var sectionlist = [];
+                        callback(encounterTypes);
+                    }
+                });
+        }
+    });
+}
 
-                        if(Array.isArray(rows) && rows.length){
-                            for(var pLoop=0;pLoop<rows.length;pLoop++)
-                            {
-                                var imageInfo = rows[pLoop].file_path.split(',');
-                                var imageDetails = [];
-
-                                if(Array.isArray(imageInfo) && imageInfo.length){
-                                    for(var pIloop=0;pIloop<imageInfo.length;pIloop++)
-                                    {
-                                                imageDetails[pIloop] = {
-                                                    "name":appconstant.SECTIONLISTURL+imageInfo[pIloop]
-                                                };
-                                    }
-                                }
-
-                                sectionlist[pLoop] = {
-                                    "section_id":rows[pLoop].id,
-                                    "section_name":rows[pLoop].item_name,
-                                    "section_description":rows[pLoop].item_description,
-                                    "files_path": imageDetails
-                                };
-                            }
+clinicalactivity.insertdiagonis = (data,req,res, callback) => {
+    if(data.data==0){
+        sql.getConnection(function(err, connection) {
+            if (err) {
+                res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                middleware.beforeresponse(req,res);
+            }else{
+                connection.query("INSERT INTO `diagnosis`(`diagnosis`, `status`) VALUES (?,?)",
+                    [data.data,data.status], (err, result) => {
+                        if(err) {
+                            res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                            middleware.beforeresponse(req,res);
+                        }else{
+                            connection.release();console.log(result.insertId);
+                            callback(result.insertId);
                         }
-                        callback(sectionlist);
-                    }
-                });
-        }
-    });
+                    });
+            }
+        });
+    }else{
+        callback(data.data);
+    }
+
 }
 
+clinicalactivity.insertClinicallog = (data,req,res, callback) => {
+        sql.getConnection(function(err, connection) {
+            if (err) {
+                res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                middleware.beforeresponse(req,res);
+            }else{
 
+                var valuearray = [data.provider_id,data.hospital_id,data.patient_first_name,data.patient_last_name,
+                    data.patient_mrn,data.dob,data.encounter_type,data.cpi_code,data.consults_hours,
+                    data.diagonis_type,data.service_date,data.shift_date];
 
-keyinfo.hospitalfeedbackmail = (hospital_id,req,res, callback) => {
+                if(data.activity_log!=0){
+                    var query ="UPDATE `cross_cover_details` SET `provider_id`=?,`hospital_id`=?,`patient_first_name`=?," +
+                        "`patient_last_name`=?,`patient_mrn`=?,`dob`=?,`encounter_type`=?,`cpi_code`=?," +
+                        "`consults_hours`=?,`diagonis_type`=?,`service_date`=?,`shift_date`=? WHERE `cross_cover_details_id`=?";
+                    valuearray.push(data.activity_log);
+                }else{
+                    var query = "INSERT INTO `cross_cover_details`(`provider_id`, `hospital_id`, " +
+                        "`patient_first_name`, `patient_last_name`, `patient_mrn`, `dob`, " +
+                        "`encounter_type`, `cpi_code`, `consults_hours`, `diagonis_type`, `service_date`, " +
+                        "`shift_date`, `statuss`) " +
+                        "VALUES (?,?," +
+                        "?,?,?,?," +
+                        "?,?,?,?,?," +
+                        "?,?)";
+                    valuearray.push(data.status);
+                }
+
+                connection.query(query,valuearray
+                    , (err, result) => {
+                        if(err) {
+                            console.log(err);
+                            res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                            middleware.beforeresponse(req,res);
+                        }else{
+                            connection.release();
+                            callback(result);
+                        }
+                    });
+            }
+        });
+}
+
+clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,datas, callback) => {
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT hospital_feedback_email FROM `hospital_list` WHERE `hospital_id` = ?",
-                [hospital_id], (err, hospital_feedback_email) => {
-                    if(err) {
-                        res.sendData = {"msg":'Server under maintaince',"statuscode":503};
-                        middleware.beforeresponse(req,res);
-                    }else{
-                        connection.release();
-                        callback(hospital_feedback_email[0].hospital_feedback_email);
-                    }
-                });
+
+            if (datas.hasOwnProperty('pageno')) {
+                var conditions = "cross_cover_details.shift_date BETWEEN '"+ datas.start_date +"' and '"+ datas.end_date +"'";
+            }else{
+                var conditions = "cross_cover_details.`provider_id` = ? and cross_cover_details.statuss = ?";
+            }
+
+            // var query = "SELECT cross_cover_details.*,diagnosis.status as diagnosis_status,diagnosis.diagnosis,hospital_encounter_type.encounter_name," +
+            //     "hospital_list.hospital_name FROM `cross_cover_details` " +
+            //     " left join hospital_list on cross_cover_details.hospital_id = hospital_list.hospital_id " +
+            //     " left join hospital_encounter_type on cross_cover_details.encounter_type = hospital_encounter_type.id " +
+            //     " left join diagnosis on cross_cover_details.diagonis_type = diagnosis.field_id " +
+            //     " WHERE  limit ?,?";
+            // console.log(query);
+            // connection.query(query,
+            //     [physican_id,status,limit,items_page], (err, rows) => {
+            //         if(err) {
+            //             console.log(err);
+            //             res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+            //             middleware.beforeresponse(req,res);
+            //         }else{
+            //             connection.release();
+            //             var list = [];
+            //
+            //             if(Array.isArray(rows) && rows.length){
+            //                 for(var pLoop=0;pLoop<rows.length;pLoop++)
+            //                 {
+            //                     var diagonsis = '-';
+            //                     var diagonsis_custom = '-';
+            //                     if(rows[pLoop].diagnosis_status==1){
+            //                         diagonsis = rows[pLoop].diagnosis;
+            //                     }else if(rows[pLoop].diagnosis_status==2){
+            //                         diagonsis_custom = rows[pLoop].diagnosis;
+            //                     }
+            //
+            //                     list[pLoop] = {
+            //                         "id":rows[pLoop].id,
+            //                         "patient_first_name":rows[pLoop].patient_first_name,
+            //                         "patient_last_name":rows[pLoop].patient_last_name,
+            //                         "patient_mrn":rows[pLoop].patient_mrn,
+            //                         "dob":common.getFormattedDate(rows[pLoop].dob),
+            //                         "cpi_code":rows[pLoop].cpi_code,
+            //                         "consults_hours":rows[pLoop].consults_hours,
+            //                         "service_date":common.getFormattedDate(rows[pLoop].service_date),
+            //                         "shift_date":common.getFormattedDate(rows[pLoop].shift_date),
+            //                         "diagonsis":rows[pLoop].id,
+            //                         "other_diagonis":rows[pLoop].item_name,
+            //                         "hospital_name":rows[pLoop].hospital_name,
+            //                         "encounter_type":rows[pLoop].encounter_name,
+            //                         "diagonsis":diagonsis,
+            //                         "diagonsis_custom":diagonsis_custom
+            //                     };
+            //                 }
+            //             }
+            //             callback(list);
+            //         }
+            //     });
         }
     });
 }
 
-
-
-
-
-module.exports = keyinfo;
+module.exports = clinicalactivity;

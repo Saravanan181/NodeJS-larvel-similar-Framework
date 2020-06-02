@@ -15,6 +15,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var enDecryptRouter = require('./routes/endecrypt');
 var keyinfoRouter = require('./routes/keyinfo');
+var clinicalactivityRouter = require('./routes/clinicalactivity');
 var logRouter = require('./routes/logaccess');
 
 
@@ -46,7 +47,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // users details
 app.use('/users',authenticateToken,middleware.afterrequest, usersRouter, middleware.beforeresponse);
 app.use('/keyinfo',authenticateToken,middleware.afterrequest, keyinfoRouter, middleware.beforeresponse);
-
+app.use('/clinicalactivity',authenticateToken,middleware.afterrequest, clinicalactivityRouter, middleware.beforeresponse);
 //keyinfo details
 
 
@@ -116,9 +117,9 @@ function authenticateToken(req, res, next) {
 
 }
 
-server.listen(3000);
-server.on('listening', function() {
-    console.log('Server started on port %s at %s', server.address().port, server.address().address);
-});
+// server.listen(3000);
+// server.on('listening', function() {
+//     console.log('Server started on port %s at %s', server.address().port, server.address().address);
+// });
 
 module.exports = app;

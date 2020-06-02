@@ -44,8 +44,8 @@ users.hospital = (info,req,res, callback) => {
         // console.log('ddd');
         connection.query("SELECT hl.hospital_id,hl.hospital_name FROM `add_physician_hospital` as aph " +
             "left join hospital_list as hl on aph.hospital_id=hl.hospital_id " +
-            "WHERE aph.`physician_id`=?",
-            [info], (err, rows) => {
+            "WHERE aph.`physician_id`=? and hl.is_Active=?",
+            [info,1], (err, rows) => {
                 if (err) {
                     var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
                     logconf.writelog(logdata);
