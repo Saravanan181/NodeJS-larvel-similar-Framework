@@ -123,62 +123,62 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
             middleware.beforeresponse(req,res);
         }else{
 
-            if (datas.hasOwnProperty('pageno')) {
-                var conditions = "cross_cover_details.shift_date BETWEEN '"+ datas.start_date +"' and '"+ datas.end_date +"'";
-            }else{
-                var conditions = "cross_cover_details.`provider_id` = ? and cross_cover_details.statuss = ?";
-            }
+            // if (datas.hasOwnProperty('pageno')) {
+            //     var conditions = "cross_cover_details.shift_date BETWEEN '"+ datas.start_date +"' and '"+ datas.end_date +"'";
+            // }else{
+            //     var conditions = "cross_cover_details.`provider_id` = ? and cross_cover_details.statuss = ?";
+            // }
 
-            // var query = "SELECT cross_cover_details.*,diagnosis.status as diagnosis_status,diagnosis.diagnosis,hospital_encounter_type.encounter_name," +
-            //     "hospital_list.hospital_name FROM `cross_cover_details` " +
-            //     " left join hospital_list on cross_cover_details.hospital_id = hospital_list.hospital_id " +
-            //     " left join hospital_encounter_type on cross_cover_details.encounter_type = hospital_encounter_type.id " +
-            //     " left join diagnosis on cross_cover_details.diagonis_type = diagnosis.field_id " +
-            //     " WHERE  limit ?,?";
-            // console.log(query);
-            // connection.query(query,
-            //     [physican_id,status,limit,items_page], (err, rows) => {
-            //         if(err) {
-            //             console.log(err);
-            //             res.sendData = {"msg":'Server under maintaince',"statuscode":506};
-            //             middleware.beforeresponse(req,res);
-            //         }else{
-            //             connection.release();
-            //             var list = [];
-            //
-            //             if(Array.isArray(rows) && rows.length){
-            //                 for(var pLoop=0;pLoop<rows.length;pLoop++)
-            //                 {
-            //                     var diagonsis = '-';
-            //                     var diagonsis_custom = '-';
-            //                     if(rows[pLoop].diagnosis_status==1){
-            //                         diagonsis = rows[pLoop].diagnosis;
-            //                     }else if(rows[pLoop].diagnosis_status==2){
-            //                         diagonsis_custom = rows[pLoop].diagnosis;
-            //                     }
-            //
-            //                     list[pLoop] = {
-            //                         "id":rows[pLoop].id,
-            //                         "patient_first_name":rows[pLoop].patient_first_name,
-            //                         "patient_last_name":rows[pLoop].patient_last_name,
-            //                         "patient_mrn":rows[pLoop].patient_mrn,
-            //                         "dob":common.getFormattedDate(rows[pLoop].dob),
-            //                         "cpi_code":rows[pLoop].cpi_code,
-            //                         "consults_hours":rows[pLoop].consults_hours,
-            //                         "service_date":common.getFormattedDate(rows[pLoop].service_date),
-            //                         "shift_date":common.getFormattedDate(rows[pLoop].shift_date),
-            //                         "diagonsis":rows[pLoop].id,
-            //                         "other_diagonis":rows[pLoop].item_name,
-            //                         "hospital_name":rows[pLoop].hospital_name,
-            //                         "encounter_type":rows[pLoop].encounter_name,
-            //                         "diagonsis":diagonsis,
-            //                         "diagonsis_custom":diagonsis_custom
-            //                     };
-            //                 }
-            //             }
-            //             callback(list);
-            //         }
-            //     });
+            var query = "SELECT cross_cover_details.*,diagnosis.status as diagnosis_status,diagnosis.diagnosis,hospital_encounter_type.encounter_name," +
+                "hospital_list.hospital_name FROM `cross_cover_details` " +
+                " left join hospital_list on cross_cover_details.hospital_id = hospital_list.hospital_id " +
+                " left join hospital_encounter_type on cross_cover_details.encounter_type = hospital_encounter_type.id " +
+                " left join diagnosis on cross_cover_details.diagonis_type = diagnosis.field_id " +
+                " WHERE cross_cover_details.`provider_id` = ? and cross_cover_details.statuss = ? limit ?,?";
+            console.log(query);
+            connection.query(query,
+                [physican_id,status,limit,items_page], (err, rows) => {
+                    if(err) {
+                        console.log(err);
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+                        var list = [];
+
+                        if(Array.isArray(rows) && rows.length){
+                            for(var pLoop=0;pLoop<rows.length;pLoop++)
+                            {
+                                var diagonsis = '-';
+                                var diagonsis_custom = '-';
+                                if(rows[pLoop].diagnosis_status==1){
+                                    diagonsis = rows[pLoop].diagnosis;
+                                }else if(rows[pLoop].diagnosis_status==2){
+                                    diagonsis_custom = rows[pLoop].diagnosis;
+                                }
+
+                                list[pLoop] = {
+                                    "id":rows[pLoop].id,
+                                    "patient_first_name":rows[pLoop].patient_first_name,
+                                    "patient_last_name":rows[pLoop].patient_last_name,
+                                    "patient_mrn":rows[pLoop].patient_mrn,
+                                    "dob":common.getFormattedDate(rows[pLoop].dob),
+                                    "cpi_code":rows[pLoop].cpi_code,
+                                    "consults_hours":rows[pLoop].consults_hours,
+                                    "service_date":common.getFormattedDate(rows[pLoop].service_date),
+                                    "shift_date":common.getFormattedDate(rows[pLoop].shift_date),
+                                    "diagonsis":rows[pLoop].id,
+                                    "other_diagonis":rows[pLoop].item_name,
+                                    "hospital_name":rows[pLoop].hospital_name,
+                                    "encounter_type":rows[pLoop].encounter_name,
+                                    "diagonsis":diagonsis,
+                                    "diagonsis_custom":diagonsis_custom
+                                };
+                            }
+                        }
+                        callback(list);
+                    }
+                });
         }
     });
 }
