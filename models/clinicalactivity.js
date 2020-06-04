@@ -145,22 +145,39 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
+            var conditions = '';
 
-            // if (datas.hasOwnProperty('pageno')) {
-            //     var conditions = "cross_cover_details.shift_date BETWEEN '"+ datas.start_date +"' and '"+ datas.end_date +"'";
-            // }else{
-            //     var conditions = "cross_cover_details.`provider_id` = ? and cross_cover_details.statuss = ?";
-            // }
+            if (datas.hasOwnProperty('pageno')) {
+
+                if(datas.start_date!='' && datas.end_date!=''){
+                     conditions = "cross_cover_details.shift_date BETWEEN '"+ common.getFormattedDatemysql(datas.start_date) +"' and '"+ common.getFormattedDatemysql(datas.end_date) +"'";
+                }else if(datas.start_date!=''){
+                     conditions = "cross_cover_details.shift_date >= '"+ common.getFormattedDatemysql(datas.start_date) +"'";
+                }else if(datas.end_date!=''){
+                     conditions = "cross_cover_details.shift_date <= '"+ common.getFormattedDatemysql(datas.end_date) +"'";
+                }
+
+                if(datas.hospital_id!=''){
+                    if(conditions!=''){
+                        conditions += ' and ';
+                    }
+
+                     conditions += "cross_cover_details.hospital_id <= '"+ datas.hospital_id +"'";
+                }
+
+            }else{
+                 conditions = "cross_cover_details.`provider_id` = '"+physican_id+"' and cross_cover_details.statuss = '"+status+"'";
+            }
 
             var query = "SELECT cross_cover_details.*,diagnosis.status as diagnosis_status,diagnosis.diagnosis,hospital_encounter_type.encounter_name," +
                 "hospital_list.hospital_name FROM `cross_cover_details` " +
                 " left join hospital_list on cross_cover_details.hospital_id = hospital_list.hospital_id " +
                 " left join hospital_encounter_type on cross_cover_details.encounter_type = hospital_encounter_type.id " +
                 " left join diagnosis on cross_cover_details.diagonis_type = diagnosis.field_id " +
-                " WHERE cross_cover_details.`provider_id` = ? and cross_cover_details.statuss = ? limit ?,?";
+                " WHERE "+conditions+" limit ?,?";
             console.log(query);
             connection.query(query,
-                [physican_id,status,limit,items_page], (err, rows) => {
+                [limit,items_page], (err, rows) => {
                     if(err) {
                         console.log(err);
                         res.sendData = {"msg":'Server under maintaince',"statuscode":506};
@@ -185,11 +202,11 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
                                     "patient_first_name":rows[pLoop].patient_first_name,
                                     "patient_last_name":rows[pLoop].patient_last_name,
                                     "patient_mrn":rows[pLoop].patient_mrn,
-                                    "dob":common.getFormattedDate(rows[pLoop].dob),
+                                    "dob":common.getFormattedDateop(rows[pLoop].dob),
                                     "cpi_code":rows[pLoop].cpi_code,
                                     "consults_hours":rows[pLoop].consults_hours,
-                                    "service_date":common.getFormattedDate(rows[pLoop].service_date),
-                                    "shift_date":common.getFormattedDate(rows[pLoop].shift_date),
+                                    "service_date":common.getFormattedDateop(rows[pLoop].service_date),
+                                    "shift_date":common.getFormattedDateop(rows[pLoop].shift_date),
                                     "diagonsis":rows[pLoop].id,
                                     "other_diagonis":rows[pLoop].item_name,
                                     "hospital_name":rows[pLoop].hospital_name,
