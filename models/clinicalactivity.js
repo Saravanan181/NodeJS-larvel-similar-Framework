@@ -162,7 +162,7 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
                         conditions += ' and ';
                     }
 
-                     conditions += "cross_cover_details.hospital_id <= '"+ datas.hospital_id +"'";
+                     conditions += "cross_cover_details.hospital_id = '"+ crypthex.decrypt(datas.hospital_id) +"'";
                 }
 
             }else{
