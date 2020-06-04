@@ -16,6 +16,17 @@ router.get('/encountertype/:id', function(req, res, next) {
 });
 
 
+router.get('/diagnosis', function(req, res, next) {
+    var hospital_id = req.params.id;
+    clinicalactivity.diagnosis(req,res, function(list){
+        var details = {statuscode:200,"list":list,"msg":"Encounter list"};
+        res.sendData = details;
+        next();
+    });
+});
+
+
+
 router.get('/cptcodes', function(req, res, next) {
     var hospital_id = req.params.id;
     clinicalactivity.codes(req,res, function(codes){

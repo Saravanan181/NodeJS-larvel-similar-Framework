@@ -14,19 +14,42 @@ clinicalactivity.encounterinfo = (hospital_id,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT encounter_type,id FROM `hospital_encounter_type` WHERE `hospital_id` = ? ORDER BY `hospital_encounter_type`.`encounter_name` ASC",
-                [hospital_id,0], (err, encounterTypes) => {
+            connection.query("SELECT encounter_name,id FROM `hospital_encounter_type` WHERE `hospital_id` = ? ORDER BY `hospital_encounter_type`.`encounter_name` ASC",
+                [hospital_id], (err, encounterTypes) => {
                     if(err) {
+                        console.log(err);
                         res.sendData = {"msg":'Server under maintaince',"statuscode":503};
                         middleware.beforeresponse(req,res);
                     }else{
                         connection.release();
-                        callback(encounterTypes.insertId);
+                        callback(encounterTypes);
                     }
                 });
         }
     });
 }
+
+clinicalactivity.diagnosis = (req,res, callback) => {
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+            connection.query("SELECT field_id as id,diagnosis FROM `diagnosis` WHERE `status` = ? ORDER BY `diagnosis` ASC",
+                [1], (err, diagnosis) => {
+                    if(err) {
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+                        callback(diagnosis);
+                    }
+                });
+        }
+    });
+}
+
+
 
 clinicalactivity.codes = (req,res, callback) => {
     sql.getConnection(function(err, connection) {
