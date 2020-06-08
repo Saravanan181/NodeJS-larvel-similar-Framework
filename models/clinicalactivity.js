@@ -198,7 +198,7 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
                                 }
 
                                 list[pLoop] = {
-                                    "id":rows[pLoop].id,
+                                    "id":rows[pLoop].cross_cover_details_id,
                                     "patient_first_name":rows[pLoop].patient_first_name,
                                     "patient_last_name":rows[pLoop].patient_last_name,
                                     "patient_mrn":rows[pLoop].patient_mrn,
@@ -207,7 +207,6 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
                                     "consults_hours":rows[pLoop].consults_hours,
                                     "service_date":common.getFormattedDateop(rows[pLoop].service_date),
                                     "shift_date":common.getFormattedDateop(rows[pLoop].shift_date),
-                                    "diagonsis":rows[pLoop].id,
                                     "other_diagonis":rows[pLoop].item_name,
                                     "hospital_name":rows[pLoop].hospital_name,
                                     "encounter_type":rows[pLoop].encounter_name,
