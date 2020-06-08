@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const jwt = require("jsonwebtoken");
+var common = require("../traits/common");
 const clinicalactivity = require("../models/clinicalactivity");
 var crypthex = require("../endecrypt/crypthex");
 
@@ -50,17 +51,17 @@ router.post('/addlog', function(req, res, next) {
         clinicalactivity.insertdiagonis(diagonis_data,req,res, function(insertId){
             var addlogdetails = [];
             addlogdetails.provider_id = userInfo.physican_id;
-            addlogdetails.hospital_id = data.hospital_id;
+            addlogdetails.hospital_id = crypthex.decrypt(data.hospital_id);
             addlogdetails.patient_first_name = data.patient_first_name;
             addlogdetails.patient_last_name = data.patient_last_name;
             addlogdetails.patient_mrn = data.patient_mrn;
-            addlogdetails.dob = data.dob;
+            addlogdetails.dob = common.getFormattedDatemysql(data.dob);
             addlogdetails.encounter_type = data.encounter_type;
             addlogdetails.cpi_code = data.cpi_code;
             addlogdetails.consults_hours = data.consults_hours;
             addlogdetails.diagonis_type = insertId;
-            addlogdetails.service_date = data.service_date;
-            addlogdetails.shift_date = data.shift_date;
+            addlogdetails.service_date = common.getFormattedDatemysql(data.service_date);
+            addlogdetails.shift_date = common.getFormattedDatemysql(data.shift_date);
             addlogdetails.activity_log = data.activity_log;
             addlogdetails.status = 1;
 
