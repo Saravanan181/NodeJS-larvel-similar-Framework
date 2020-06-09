@@ -150,11 +150,11 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
             if (datas.hasOwnProperty('pageno')) {
 
                 if(datas.start_date!='' && datas.end_date!=''){
-                     conditions = "and cross_cover_details.shift_date BETWEEN '"+ common.getFormattedDatemysql(datas.start_date) +"' and '"+ common.getFormattedDatemysql(datas.end_date) +"'";
+                     conditions += "and cross_cover_details.shift_date BETWEEN '"+ common.getFormattedDatemysql(datas.start_date) +"' and '"+ common.getFormattedDatemysql(datas.end_date) +"'";
                 }else if(datas.start_date!=''){
-                     conditions = "and cross_cover_details.shift_date >= '"+ common.getFormattedDatemysql(datas.start_date) +"'";
+                     conditions += "and cross_cover_details.shift_date >= '"+ common.getFormattedDatemysql(datas.start_date) +"'";
                 }else if(datas.end_date!=''){
-                     conditions = "and cross_cover_details.shift_date <= '"+ common.getFormattedDatemysql(datas.end_date) +"'";
+                     conditions += "and cross_cover_details.shift_date <= '"+ common.getFormattedDatemysql(datas.end_date) +"'";
                 }
 
                 if(datas.hospital_id!=''){
