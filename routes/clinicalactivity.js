@@ -107,7 +107,7 @@ console.log(datas);
     var items_page = 4;
     var limit = items_page*datas.pageno;
 
-    clinicalactivity.clinicalloglist(userInfo.physican_id,limit,items_page,1,req,res,datas, function(list){
+    clinicalactivity.clinicalloglist(userInfo.physican_id,limit,items_page,2,req,res,datas, function(list){
         var details = {statuscode:200,"list":list,"msg":"Encounter list"};
         res.sendData = details;
         next();

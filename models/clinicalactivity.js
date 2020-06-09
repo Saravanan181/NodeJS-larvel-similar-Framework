@@ -145,16 +145,16 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var conditions = '';
+            var conditions = " cross_cover_details.`provider_id` = '"+physican_id+"' and cross_cover_details.statuss = '"+status+"'";
 
             if (datas.hasOwnProperty('pageno')) {
 
                 if(datas.start_date!='' && datas.end_date!=''){
-                     conditions = "cross_cover_details.shift_date BETWEEN '"+ common.getFormattedDatemysql(datas.start_date) +"' and '"+ common.getFormattedDatemysql(datas.end_date) +"'";
+                     conditions = "and cross_cover_details.shift_date BETWEEN '"+ common.getFormattedDatemysql(datas.start_date) +"' and '"+ common.getFormattedDatemysql(datas.end_date) +"'";
                 }else if(datas.start_date!=''){
-                     conditions = "cross_cover_details.shift_date >= '"+ common.getFormattedDatemysql(datas.start_date) +"'";
+                     conditions = "and cross_cover_details.shift_date >= '"+ common.getFormattedDatemysql(datas.start_date) +"'";
                 }else if(datas.end_date!=''){
-                     conditions = "cross_cover_details.shift_date <= '"+ common.getFormattedDatemysql(datas.end_date) +"'";
+                     conditions = "and cross_cover_details.shift_date <= '"+ common.getFormattedDatemysql(datas.end_date) +"'";
                 }
 
                 if(datas.hospital_id!=''){
@@ -165,10 +165,7 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
                      conditions += "cross_cover_details.hospital_id = '"+ crypthex.decrypt(datas.hospital_id) +"'";
                 }
 
-            }else{
-                 conditions = "cross_cover_details.`provider_id` = '"+physican_id+"' and cross_cover_details.statuss = '"+status+"'";
             }
-
             var query = "SELECT cross_cover_details.*,diagnosis.status as diagnosis_status,diagnosis.diagnosis,hospital_encounter_type.encounter_name," +
                 "hospital_list.hospital_name FROM `cross_cover_details` " +
                 " left join hospital_list on cross_cover_details.hospital_id = hospital_list.hospital_id " +
