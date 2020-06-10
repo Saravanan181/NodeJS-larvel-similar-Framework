@@ -51,15 +51,17 @@ clinicalactivity.diagnosis = (req,res, callback) => {
 
 
 
-clinicalactivity.codes = (req,res, callback) => {
+clinicalactivity.statuschange = (data,status,req,res, callback) => {
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT encounter_type,id FROM `hospital_encounter_type` WHERE `hospital_id` = ? ORDER BY `hospital_encounter_type`.`encounter_name` ASC",
-                [hospital_id,0], (err, encounterTypes) => {
+            var ids = data.ids;
+            connection.query("UPDATE `cross_cover_details` SET `statuss`=? where `cross_cover_details_id` IN("+ids+")",
+                [status], (err, encounterTypes) => {
                     if(err) {
+                        console.log(err);
                         res.sendData = {"msg":'Server under maintaince',"statuscode":503};
                         middleware.beforeresponse(req,res);
                     }else{

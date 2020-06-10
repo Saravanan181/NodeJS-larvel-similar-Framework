@@ -28,10 +28,10 @@ router.get('/diagnosis', function(req, res, next) {
 
 
 
-router.get('/cptcodes', function(req, res, next) {
-    var hospital_id = req.params.id;
-    clinicalactivity.codes(req,res, function(codes){
-        var details = {statuscode:200,"list":encountertypes,"msg":"Codes list"};
+router.post('/logsubmit', function(req, res, next) {
+    var data = req.body.data;
+    clinicalactivity.statuschange(data,2,req,res, function(codes){
+        var details = {statuscode:200,"msg":"The Clinical activity log are submitted"};
         res.sendData = details;
         next();
     });
