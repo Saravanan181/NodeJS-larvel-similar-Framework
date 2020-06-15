@@ -75,8 +75,9 @@ app.use(function(err, req, res, next) {
 
 function authenticateToken(req, res, next) {
 
-// console.log(req.path);
-    if(req.path == '/login'){
+
+var reqpath = req.path.split('/')[1];console.log(reqpath);
+    if(reqpath == 'login' || reqpath == 'sectionimage'){
         next()
     }else{
 

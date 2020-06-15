@@ -1,7 +1,7 @@
 const sql = require("./mysqlconnect.js");
 var middleware = require('../middleware/reqresmiddleware');
 var crypthex = require("../endecrypt/crypthex");
-var appconstant = require("../config/appconstant")
+var appconstant = require("../config/appconstant");
 // constructor
 const keyinfo = function() {
 
@@ -63,7 +63,7 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                     {
                                                 imageDetails[pIloop] = {
                                                     "name":imageInfo[pIloop],
-                                                    "link":appconstant.SECTIONLISTURL+imageInfo[pIloop]
+                                                    "link":appconstant.SECTIONLISTURL+crypthex.encrypt(JSON.stringify(imageInfo[pIloop]))
                                                 };
                                     }
                                 }
@@ -73,7 +73,7 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                     "section_name":rows[pLoop].item_name,
                                     "section_description":rows[pLoop].item_description,
                                     "image_details": imageDetails,
-                                    "overalldownload" : appconstant.SECTIONOVERLLDOWNLOAD+rows[pLoop].id
+                                    "overalldownload" : appconstant.SECTIONOVERLLDOWNLOAD+crypthex.encrypt(JSON.stringify(rows[pLoop].id))
                                 };
                             }
                         }
