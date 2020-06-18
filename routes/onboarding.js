@@ -1,0 +1,27 @@
+var express = require('express');
+var router = express.Router();
+const jwt = require("jsonwebtoken");
+var common = require("../traits/common");
+const onboarding = require("../models/onboarding");
+var crypthex = require("../endecrypt/crypthex");
+
+
+/* GET users listing. */
+router.get('/list/:type/:pageno', function(req, res, next) {
+    var type = req.params.type;
+    var pageno = req.params.pageno;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    var userInfo = jwt.verify(token, 'nodeethos576asdas6');
+
+    var items_page = 4;
+    var limit = items_page*pageno;
+
+    onboarding.list(userInfo.physican_id,type,limit,items_page,req,res, function(list){
+        var details = {statuscode:200,"list":list,"msg":"Task list"};
+        res.sendData = details;
+        next();
+    });
+});
+
+module.exports = router;
