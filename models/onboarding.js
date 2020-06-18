@@ -42,7 +42,7 @@ const onboarding = function() {
 
                                 list[pLoop] = {
                                     "task_name":rows[pLoop].task_name,
-                                    "due_date":getFormattedDateop(rows[pLoop].due_date),
+                                    "due_date":common.getFormattedDateop(rows[pLoop].due_date),
                                     "task_id":rows[pLoop].task_id,
                                     "created_date":common.getFormattedDateop(rows[pLoop].created_date),
                                     "status":status
