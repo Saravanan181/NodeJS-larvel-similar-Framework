@@ -24,4 +24,25 @@ router.get('/list/:type/:pageno', function(req, res, next) {
     });
 });
 
+
+router.get('/taskdetails/:id', function(req, res, next) {
+    var id = req.params.id;
+
+    onboarding.details(id,req,res, function(details){
+        var details = {statuscode:200,"details":details,"msg":"Task Details"};
+        res.sendData = details;
+        next();
+    });
+});
+
+router.put('/updateavaildate/:id', function(req, res, next) {
+    var id = req.params.id;
+
+    onboarding.availabledateupdate(id,req,res, function(details){
+        var details = {statuscode:200,"msg":"Available time updated"};
+        res.sendData = details;
+        next();
+    });
+});
+
 module.exports = router;
