@@ -34,10 +34,11 @@ const onboarding = function() {
                         if(Array.isArray(rows) && rows.length){
                             for(var pLoop=0;pLoop<rows.length;pLoop++)
                             {
+                                var status = 'Incomplete';
                                 if(rows[pLoop].is_provider_completed==0){
-                                    var status = 'Incomplete';
+                                     status = 'Incomplete';
                                 }else if(rows[pLoop].is_provider_completed==1){
-                                    var status = 'Completed';
+                                     status = 'Completed';
                                 }
 
                                 list[pLoop] = {
