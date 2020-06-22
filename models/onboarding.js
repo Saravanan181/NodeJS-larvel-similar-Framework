@@ -115,17 +115,21 @@ onboarding.details = (id,req,res, callback) => {
     });
 }
 
-onboarding.availabledateupdate = (id,req,res, callback) => {
+onboarding.availabledateupdate = (data,req,res, callback) => {
+
+     var ids = data.ids;
+     var status = data.status;
+
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "UPDATE `onboarding_task_users_available_dates` SET `provider_available_dates`='1' where `available_dates_id`=?";
+            var query = "UPDATE `onboarding_task_users_available_dates` SET `provider_available_dates`='"+status+"' where `available_dates_id` IN("+ids+") ";
             console.log(query);
             connection.query(query,
-                [id], (err, rows) => {
+                [], (err, rows) => {
                     if(err) {
                         console.log(err);
                         res.sendData = {"msg":'Server under maintaince',"statuscode":506};

@@ -35,10 +35,11 @@ router.get('/taskdetails/:id', function(req, res, next) {
     });
 });
 
-router.put('/updateavaildate/:id', function(req, res, next) {
-    var id = req.params.id;
+router.post('/updateavaildate', function(req, res, next) {
 
-    onboarding.availabledateupdate(id,req,res, function(details){
+    var data = req.body.data;
+
+    onboarding.availabledateupdate(data,req,res, function(details){
         var details = {statuscode:200,"msg":"Available time updated"};
         res.sendData = details;
         next();

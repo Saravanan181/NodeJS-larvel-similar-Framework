@@ -199,7 +199,7 @@ clinicalactivity.clinicalloglist = (physican_id,limit,items_page,status,req,res,
                                 list[pLoop] = {
                                     "id":rows[pLoop].cross_cover_details_id,
                                     "patient_first_name":rows[pLoop].patient_first_name,
-                                    "patient_last_name":rows[pLoop].patient_last_name,
+                                    "patient_last_name":rows[pLoop].patient_last_name!=null ? rows[pLoop].patient_last_name : '-',
                                     "patient_mrn":rows[pLoop].patient_mrn,
                                     "dob":common.getFormattedDateop(rows[pLoop].dob),
                                     "cpi_code":rows[pLoop].cpi_code,
