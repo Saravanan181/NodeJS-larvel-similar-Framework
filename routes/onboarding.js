@@ -39,8 +39,28 @@ router.post('/updateavaildate', function(req, res, next) {
 
     var data = req.body.data;
 
-    onboarding.availabledateupdate(data,req,res, function(details){
+    onboarding.availtaskdpu(data,req,res, function(details){
         var details = {statuscode:200,"msg":"Available time updated"};
+        res.sendData = details;
+        next();
+    });
+});
+
+
+router.post('/updatereminddate', function(req, res, next) {
+    var data = req.body.data;
+    onboarding.remindtaskdpu(data,req,res, function(details){
+        var details = {statuscode:200,"msg":"Reminder time updated"};
+        res.sendData = details;
+        next();
+    });
+});
+
+
+router.put('/removereminddate/:id', function(req, res, next) {
+    var id = req.params.id;
+    onboarding.remindtasketeled(id,req,res, function(details){
+        var details = {statuscode:200,"msg":"Reminder deleted Successfully"};
         res.sendData = details;
         next();
     });

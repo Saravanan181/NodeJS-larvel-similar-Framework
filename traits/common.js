@@ -23,6 +23,18 @@ common.getFormattedDatemysql = (date) => {
         return year+"-"+month+"-"+day;
 }
 
+common.getFormattedDatetimemysql = (date) => {
+        var todayTime = new Date(date);
+        var month = todayTime.getMonth()+1;
+        var day = todayTime.getDate();
+        var year = todayTime.getFullYear();
+        var seconds = todayTime.getSeconds();
+        var minutes = todayTime.getMinutes();
+        var hour = todayTime.getHours();
+
+        return year+"-"+month+"-"+day+' '+hour+':'+minutes+':'+seconds;
+}
+
 common.filedownload = (req,res,decryptimagekey, callback) => {
         var filePathDefault = appconstant.SECTIONFILEPATH+decryptimagekey;
         var dest = process.cwd()+'/templefile/'+decryptimagekey;
