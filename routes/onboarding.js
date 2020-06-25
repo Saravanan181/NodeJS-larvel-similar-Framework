@@ -66,4 +66,15 @@ router.put('/removereminddate/:id', function(req, res, next) {
     });
 });
 
+router.get('/taskcommentslist/:id', function(req, res, next) {
+    var id = req.params.id;
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    var userInfo = jwt.verify(token, 'nodeethos576asdas6');
+    onboarding.commnetsdetailslist(userInfo.physican_id,id,req,res, function(details){
+        var details = {statuscode:200,"msg":"Reminder deleted Successfully"};
+        res.sendData = details;
+        next();
+    });
+});
 module.exports = router;

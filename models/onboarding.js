@@ -118,7 +118,7 @@ onboarding.details = (id,req,res, callback) => {
                                         var provided_remind = date_re[pIloop].split('$$');
                                         date_remind[pIloop] = {
                                             "date" : provided_remind[0],
-                                            "remind_date_id" : provided_check[1],
+                                            "remind_date_id" : provided_remind[1],
                                         };
                                     }
                                 }
@@ -220,6 +220,53 @@ onboarding.remindtasketeled = (id,req,res, callback) => {
                     }else{
                         connection.release();
                         callback(rows);
+                    }
+                });
+        }
+    });
+}
+
+
+onboarding.commnetsdetailslist = (userid,id,req,res, callback) => {
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+
+            var query = "SELECT `commented_user_id`,`comments`,`created_on` FROM `onboarding_task_users_comments` WHERE `assigned_task_id`='"+id+"' and type='1' ";
+            console.log(query);
+            connection.query(query,
+                [id], (err, rows) => {
+                    if(err) {
+                        console.log(err);
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+
+                        var list = [];
+                        //
+                        if(Array.isArray(rows) && rows.length){
+                            for(var pLoop=0;pLoop<rows.length;pLoop++)
+                            {
+                                var usernametitle = 'Admin Commented';
+                                if(rows[pLoop].commented_user_id==userid){
+                                    usernametitle = 'you Commented';
+                                }
+
+                                var commentdate = new Date(rows[pLoop].created_on);
+
+                                list[pLoop] = {
+                                    "usernametitle":usernametitle,
+                                    "date":common.getFormattedDateop(rows[pLoop].created_on) + commentdate.getHours()+':'+commentdate.getMinutes()+' '+commentdate.getSeconds(),
+                                    "task_id":rows[pLoop].task_id,
+                                    "created_date":common.getFormattedDateop(rows[pLoop].created_date),
+                                    "status":status
+                                };
+                            }
+                        }
+                        callback(details);
                     }
                 });
         }

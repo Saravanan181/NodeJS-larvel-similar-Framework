@@ -15,6 +15,14 @@ common.getFormattedDateop = (date) => {
         return month + "-" + day + "-" + year;
 }
 
+common.getFormattedDateop = (date) => {
+        var todayTime = new Date(date);
+        var month = todayTime.getMonth()+1;
+        var day = todayTime.getDate();
+        var year = todayTime.getFullYear();
+        return month + "-" + day + "-" + year;
+}
+
 common.getFormattedDatemysql = (date) => {
         var todayTime = new Date(date);
         var month = todayTime.getMonth()+1;
