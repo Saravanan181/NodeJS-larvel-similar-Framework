@@ -72,9 +72,24 @@ router.get('/taskcommentslist/:id', function(req, res, next) {
     const token = authHeader && authHeader.split(' ')[1];
     var userInfo = jwt.verify(token, 'nodeethos576asdas6');
     onboarding.commnetsdetailslist(userInfo.physican_id,id,req,res, function(details){
-        var details = {statuscode:200,"msg":"Reminder deleted Successfully"};
+        var details = {statuscode:200,"msg":"Commnets list","list":details};
         res.sendData = details;
         next();
     });
 });
+
+
+router.post('/taskcommentinsert', function(req, res, next) {
+    var data = req.body.data;
+
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    var userInfo = jwt.verify(token, 'nodeethos576asdas6');
+    onboarding.inscomtk(userInfo.physican_id,data,req,res, function(details){
+        var details = {statuscode:200,"msg":"Comments inserted"};
+        res.sendData = details;
+        next();
+    });
+});
+
 module.exports = router;
