@@ -45,8 +45,8 @@ const onboarding = function() {
                                     "task_name":rows[pLoop].task_name,
                                     "due_date":common.getFormattedDateop(rows[pLoop].due_date) + appconstant.CONSTTIMEZONE,
                                     "task_id":rows[pLoop].task_id,
-                                    // "created_date":common.getFormattedDateop(rows[pLoop].created_date),
-                                    "created_date":rows[pLoop].created_date + appconstant.CONSTTIMEZONE,
+                                    "created_date":common.getFormattedDateop(rows[pLoop].created_date) + appconstant.CONSTTIMEZONE,
+                                    // "created_date":rows[pLoop].created_date + appconstant.CONSTTIMEZONE,
                                     "status":status
                                 };
                             }
