@@ -306,4 +306,62 @@ onboarding.inscomtk = (userid,data,req,res, callback) => {
     });
 }
 
+
+onboarding.gettypestatus = (userid,req,res, callback) => {
+
+    var id = data.id;
+    var comments = data.comments;
+    var date = common.getFormattedDatetimemysql(data.datetime);
+
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+
+            var query = "SELECT x.task_category_name,count(a.copied_task_id) as 'task_status'," +
+                " (select count(*) from onboarding_task_assigned_user where task_category_id=x.task_category_id and assigned_provider_id='57') as 'task_count' " +
+                " FROM onboarding_task_category as X " +
+                " left join onboarding_task_detail_user as b on b.task_category_id = x.task_category_id " +
+                " left join `onboarding_task_detail_user_assigned` as a on a.copied_task_id=b.copied_task_id " +
+                " and a.`assigned_provider_id`='57' and a.`overall_status`='0' and a.assign_status " +
+                " group by x.task_category_id ";
+            console.log(query);
+            connection.query(query,
+                [id], (err, rows) => {
+                    if(err) {
+                        console.log(err);
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+
+                        var details = [];
+                        //
+                        if(Array.isArray(rows) && rows.length){
+                            for(var pLoop=0;pLoop<rows.length;pLoop++)
+                            {
+                                var status = 'Completed';
+                                if(rows[pLoop].task_status>0 || rows[pLoop].task_count==0){
+                                    status = 'Pending';
+                                }
+
+                                var commentdate = new Date(rows[pLoop].created_on);
+
+                                details[pLoop] = {
+                                    "usernametitle":usernametitle,
+                                    "date":common.getFormattedDateop(rows[pLoop].created_on) +' ' + commentdate.getHours()+':'+commentdate.getMinutes()+':'+commentdate.getSeconds() + appconstant.CONSTTIMEZONE,
+                                    // "data" : rows[pLoop].created_on,
+                                    "comments":rows[pLoop].comments
+                                };
+                            }
+                        }
+
+                        callback(rows);
+                    }
+                });
+        }
+    });
+}
+
 module.exports = onboarding;
