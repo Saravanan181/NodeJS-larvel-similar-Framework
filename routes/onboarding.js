@@ -92,14 +92,14 @@ router.post('/taskcommentinsert', function(req, res, next) {
     });
 });
 
-router.post('/typemenu', function(req, res, next) {
+router.get('/typemenu', function(req, res, next) {
     var data = req.body.data;
 
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     var userInfo = jwt.verify(token, 'nodeethos576asdas6');
     onboarding.gettypestatus(userInfo.physican_id,req,res, function(details){
-        var details = {statuscode:200,"msg":"Comments inserted"};
+        var details = {statuscode:200,"msg":"Comments inserted","list":details};
         res.sendData = details;
         next();
     });

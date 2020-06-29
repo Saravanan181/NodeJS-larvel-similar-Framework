@@ -15,11 +15,9 @@ const onboarding = function() {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "SELECT a.created_on as created_date, b.copied_task_id as task_id,b.task_name,a.due_date,a.is_provider_completed FROM `onboarding_task_detail_user_assigned` as a " +
+            var query = "SELECT created_at as created_date, copied_task_id as task_id,task_name,due_date,is_provider_completed FROM `onboarding_task_detail_user_assigned_new`  " +
 
-                        " left join onboarding_task_detail_user as b on b.copied_task_id=a.copied_task_id "+
-
-                        " where a.`assigned_provider_id`='"+physican_id+"' and a.is_internal_resource_completed='"+1+"' and b.task_category_id='"+type+"' limit ?,? ";
+                        " where `assigned_provider_id`='"+physican_id+"' and is_internal_resource_completed='1' and task_category_id='"+type+"' limit ?,? ";
             console.log(query);
             connection.query(query,
                 [limit,items_page], (err, rows) => {
@@ -65,15 +63,15 @@ onboarding.details = (id,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "SELECT a.assigned_task_id as reminder_id,b.task_description,a.created_on as created_date, b.copied_task_id as task_id,b.task_name,a.due_date,a.is_provider_completed, "+
+            var query = "SELECT a.assigned_provider_id,a.copied_task_id as reminder_id,a.task_description,a.created_at as created_date, " +
+                "a.copied_task_id as task_id,a.task_name,a.due_date,a.is_provider_completed, "+
             " group_concat(DATE_FORMAT(DATE(available_dates), \"%m %d %Y\"),' ',from_time,' ',to_time,'$$',provider_available_dates,'$$',available_dates_id) as available_date, "+
             // " group_concat(remind_on,'$$',remind_id) as remind_date "+
             " group_concat(DATE_FORMAT(remind_on, \"%m %d %Y %H:%i:%s\"),'$$',remind_id) as remind_date "+
-            " FROM `onboarding_task_detail_user_assigned` as a " +
-            " left join onboarding_task_detail_user as b on b.copied_task_id=a.copied_task_id " +
+            " FROM `onboarding_task_detail_user_assigned_new` as a " +
             " left join onboarding_task_users_available_dates as c on c.copied_task_id=a.copied_task_id " +
             " left join onboarding_task_provider_remind_on as d on " +
-            " d.assigned_task_id=a.assigned_task_id and d.remind_on_status='1'" +
+            " d.copied_task_id=a.copied_task_id and d.remind_on_status='1'" +
             " where a.copied_task_id=? group by c.copied_task_id ";
             console.log(query);
             connection.query(query,
@@ -90,7 +88,7 @@ onboarding.details = (id,req,res, callback) => {
 
                             var date_avail = [];
 
-                            if(rows[0].available_date!=null){
+                            if(rows[0].available_date!=null && rows[0].assigned_provider_id!=2){
 
                                 var date_av = rows[0].available_date.split(',');
                                 if(Array.isArray(date_av) && date_av.length){
@@ -127,6 +125,13 @@ onboarding.details = (id,req,res, callback) => {
 
                             }
 
+                            var edit_submit = 0;
+
+                            if(rows[0].assigned_provider_id==2){
+                                var edit_submit = 1;
+                            }
+
+
                             details = {
                                 "task_name" : rows[0].task_name,
                                 "task_id" : rows[0].task_id,
@@ -136,7 +141,8 @@ onboarding.details = (id,req,res, callback) => {
                                 // "created_date" : rows[0].created_date,
                                 "task_description" : rows[0].task_description,
                                 "available_date" : date_avail,
-                                "remind_date" : date_remind
+                                "remind_date" : date_remind,
+                                "edit_submit" : edit_submit
                             }
                         }
                         callback(details);
@@ -309,26 +315,26 @@ onboarding.inscomtk = (userid,data,req,res, callback) => {
 
 onboarding.gettypestatus = (userid,req,res, callback) => {
 
-    var id = data.id;
-    var comments = data.comments;
-    var date = common.getFormattedDatetimemysql(data.datetime);
-
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "SELECT x.task_category_name,count(a.copied_task_id) as 'task_status'," +
-                " (select count(*) from onboarding_task_assigned_user where task_category_id=x.task_category_id and assigned_provider_id='57') as 'task_count' " +
+            var query = "SELECT x.task_category_name,count(a.copied_task_id) as 'task_status', " +
+
+                "(select count(copied_task_id) from onboarding_task_detail_user_assigned_new where task_category_id=x.task_category_id and assigned_provider_id=?  and assign_status='1') as 'task_count'" +
+
                 " FROM onboarding_task_category as X " +
-                " left join onboarding_task_detail_user as b on b.task_category_id = x.task_category_id " +
-                " left join `onboarding_task_detail_user_assigned` as a on a.copied_task_id=b.copied_task_id " +
-                " and a.`assigned_provider_id`='57' and a.`overall_status`='0' and a.assign_status " +
+
+                " left join onboarding_task_detail_user_assigned_new as a on " +
+
+                "a.task_category_id = x.task_category_id and a.`assigned_provider_id`=? and a.`overall_status`='0' and a.assign_status='1' " +
+
                 " group by x.task_category_id ";
             console.log(query);
             connection.query(query,
-                [id], (err, rows) => {
+                [userid,userid], (err, rows) => {
                     if(err) {
                         console.log(err);
                         res.sendData = {"msg":'Server under maintaince',"statuscode":506};
@@ -342,22 +348,22 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
                             for(var pLoop=0;pLoop<rows.length;pLoop++)
                             {
                                 var status = 'Completed';
-                                if(rows[pLoop].task_status>0 || rows[pLoop].task_count==0){
+                                if(rows[pLoop].task_status == 0 && rows[pLoop].task_count > 0){
+                                    status = 'Completed';
+                                }else if(rows[pLoop].task_status >0 && rows[pLoop].task_count > 0){
                                     status = 'Pending';
                                 }
 
                                 var commentdate = new Date(rows[pLoop].created_on);
 
                                 details[pLoop] = {
-                                    "usernametitle":usernametitle,
-                                    "date":common.getFormattedDateop(rows[pLoop].created_on) +' ' + commentdate.getHours()+':'+commentdate.getMinutes()+':'+commentdate.getSeconds() + appconstant.CONSTTIMEZONE,
-                                    // "data" : rows[pLoop].created_on,
-                                    "comments":rows[pLoop].comments
+                                    "title":rows[pLoop].task_category_name,
+                                    "status ":status
                                 };
                             }
                         }
 
-                        callback(rows);
+                        callback(details);
                     }
                 });
         }
