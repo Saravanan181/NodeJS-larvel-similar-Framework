@@ -325,7 +325,7 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
 
                 "(select count(copied_task_id) from onboarding_task_detail_user_assigned where task_category_id=x.task_category_id and assigned_provider_id=?  and assign_status='1') as 'task_count'" +
 
-                " FROM onboarding_task_category as X " +
+                " FROM onboarding_task_category as x " +
 
                 " left join onboarding_task_detail_user_assigned as a on " +
 
