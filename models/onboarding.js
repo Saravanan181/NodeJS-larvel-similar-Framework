@@ -328,7 +328,7 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
 
                 " left join onboarding_task_detail_user_assigned as a on " +
 
-                "a.task_category_id = x.task_category_id and a.`assigned_provider_id`=? a.is_assigned_provider_id='1' and a.`overall_status`='0' and a.assign_status='1' " +
+                "a.task_category_id = x.task_category_id and a.`assigned_provider_id`=? and is_provider_completed='1' and a.`overall_status`='0' and a.assign_status='1' " +
 
                 " group by x.task_category_id ";
             console.log(query);
