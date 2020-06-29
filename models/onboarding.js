@@ -67,15 +67,14 @@ onboarding.details = (id,req,res, callback) => {
                 "a.copied_task_id as task_id,a.task_name,a.due_date,a.is_provider_completed, "+
             " group_concat(DATE_FORMAT(DATE(available_dates), \"%m %d %Y\"),' ',from_time,' ',to_time,'$$',provider_available_dates,'$$',available_dates_id) as available_date, "+
             // " group_concat(remind_on,'$$',remind_id) as remind_date "+
-            " group_concat(DATE_FORMAT(remind_on, \"%m %d %Y %H:%i:%s\"),'$$',remind_id) as remind_date "+
+            " (select group_concat(DATE_FORMAT(y.remind_on, \"%m %d %Y %H:%i:%s\"),'$$',y.remind_id) from onboarding_task_provider_remind_on as y where y.copied_task_id=? and y.remind_on_status='1' group by y.copied_task_id ) as remind_date  "+
             " FROM `onboarding_task_detail_user_assigned` as a " +
             " left join onboarding_task_users_available_dates as c on c.copied_task_id=a.copied_task_id " +
-            " left join onboarding_task_provider_remind_on as d on " +
-            " d.copied_task_id=a.copied_task_id and d.remind_on_status='1'" +
+
             " where a.copied_task_id=? group by c.copied_task_id ";
             console.log(query);
             connection.query(query,
-                [id], (err, rows) => {
+                [id,id], (err, rows) => {
                     if(err) {
                         console.log(err);
                         res.sendData = {"msg":'Server under maintaince',"statuscode":506};
@@ -329,7 +328,7 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
 
                 " left join onboarding_task_detail_user_assigned as a on " +
 
-                "a.task_category_id = x.task_category_id and a.`assigned_provider_id`=? and a.`overall_status`='0' and a.assign_status='1' " +
+                "a.task_category_id = x.task_category_id and a.`assigned_provider_id`=? a.is_assigned_provider_id='1' and a.`overall_status`='0' and a.assign_status='1' " +
 
                 " group by x.task_category_id ";
             console.log(query);
