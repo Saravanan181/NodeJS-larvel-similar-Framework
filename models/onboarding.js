@@ -35,7 +35,7 @@ const onboarding = function() {
                                 var status = 'Incomplete';
                                 if(rows[pLoop].is_provider_completed==0){
                                      status = 'Incomplete';
-                                }else if(rows[pLoop].is_provider_completed==1){
+                                }else if(rows[pLoop].is_provider_completed==2){
                                      status = 'Completed';
                                 }
 
@@ -63,7 +63,7 @@ onboarding.details = (id,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "SELECT a.assigned_provider_id,a.copied_task_id as reminder_id,a.task_description,a.created_at as created_date, " +
+            var query = "SELECT a.task_category_id,a.task_category_type_id,a.assigned_provider_id,a.copied_task_id as reminder_id,a.task_description,a.created_at as created_date, " +
                 "a.copied_task_id as task_id,a.task_name,a.due_date,a.is_provider_completed, "+
             " group_concat(DATE_FORMAT(DATE(available_dates), \"%m %d %Y\"),' ',from_time,' ',to_time,'$$',provider_available_dates,'$$',available_dates_id) as available_date, "+
             // " group_concat(remind_on,'$$',remind_id) as remind_date "+
