@@ -293,8 +293,8 @@ onboarding.inscomtk = (userid,data,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "INSERT INTO `onboarding_task_users_comments`( `copied_task_id`, `commented_user_id`, `comments`, `type`, `created_on`)" +
-                " VALUES ('"+id+"','"+userid+"','"+comments+"','1','"+date+"')";
+            var query = "INSERT INTO `onboarding_task_users_comments`( `copied_task_id`, `commented_user_id`, `comments`, `type`)" +
+                " VALUES ('"+id+"','"+userid+"','"+comments+"','1')";
             console.log(query);
             connection.query(query,
                 [id], (err, rows) => {
