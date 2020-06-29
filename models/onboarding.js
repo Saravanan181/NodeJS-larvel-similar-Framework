@@ -323,7 +323,7 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
 
             var query = "SELECT x.task_category_name,count(a.copied_task_id) as 'task_status', " +
 
-                "(select count(copied_task_id) from onboarding_task_detail_user_assigne where task_category_id=x.task_category_id and assigned_provider_id=?  and assign_status='1') as 'task_count'" +
+                "(select count(copied_task_id) from onboarding_task_detail_user_assigned where task_category_id=x.task_category_id and assigned_provider_id=?  and assign_status='1') as 'task_count'" +
 
                 " FROM onboarding_task_category as X " +
 
