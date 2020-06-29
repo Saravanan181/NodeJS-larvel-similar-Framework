@@ -192,7 +192,7 @@ onboarding.remindtaskdpu = (data,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "INSERT INTO `onboarding_task_provider_remind_on`(`assigned_task_id`, `remind_on`, `remind_on_status`) " +
+            var query = "INSERT INTO `onboarding_task_provider_remind_on`(`copied_task_id`, `remind_on`, `remind_on_status`) " +
                 "VALUES ('"+assigned_task_id+"','"+date+"','1')";
             console.log(query);
             connection.query(query,
@@ -243,7 +243,7 @@ onboarding.commnetsdetailslist = (userid,id,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "SELECT `commented_user_id`,`comments`,`created_on` FROM `onboarding_task_users_comments` WHERE `assigned_task_id`='"+id+"' and type='1' ";
+            var query = "SELECT `commented_user_id`,`comments`,`created_on` FROM `onboarding_task_users_comments` WHERE `copied_task_id`='"+id+"' and type='1' ";
             console.log(query);
             connection.query(query,
                 [id], (err, rows) => {
@@ -293,7 +293,7 @@ onboarding.inscomtk = (userid,data,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "INSERT INTO `onboarding_task_users_comments`( `assigned_task_id`, `commented_user_id`, `comments`, `type`, `created_on`)" +
+            var query = "INSERT INTO `onboarding_task_users_comments`( `copied_task_id`, `commented_user_id`, `comments`, `type`, `created_on`)" +
                 " VALUES ('"+id+"','"+userid+"','"+comments+"','1','"+date+"')";
             console.log(query);
             connection.query(query,
