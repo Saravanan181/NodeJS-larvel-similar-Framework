@@ -347,7 +347,10 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
                             for(var pLoop=0;pLoop<rows.length;pLoop++)
                             {
                                 var status = 'Completed';
-                                if(rows[pLoop].task_status == 0 && rows[pLoop].task_count > 0){
+                                if(rows[pLoop].task_status == 0 && rows[pLoop].task_count ==0){
+                                    status = 'Pending';
+                                }
+                                else if(rows[pLoop].task_status == 0 && rows[pLoop].task_count > 0){
                                     status = 'Completed';
                                 }else if(rows[pLoop].task_status >0 && rows[pLoop].task_count > 0){
                                     status = 'Pending';
