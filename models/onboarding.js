@@ -15,7 +15,7 @@ const onboarding = function() {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "SELECT created_at as created_date, copied_task_id as task_id,task_name,due_date,is_provider_completed FROM `onboarding_task_detail_user_assigned_new`  " +
+            var query = "SELECT created_at as created_date, copied_task_id as task_id,task_name,due_date,is_provider_completed FROM `onboarding_task_detail_user_assigned`  " +
 
                         " where `assigned_provider_id`='"+physican_id+"' and is_internal_resource_completed='1' and task_category_id='"+type+"' limit ?,? ";
             console.log(query);
@@ -68,7 +68,7 @@ onboarding.details = (id,req,res, callback) => {
             " group_concat(DATE_FORMAT(DATE(available_dates), \"%m %d %Y\"),' ',from_time,' ',to_time,'$$',provider_available_dates,'$$',available_dates_id) as available_date, "+
             // " group_concat(remind_on,'$$',remind_id) as remind_date "+
             " group_concat(DATE_FORMAT(remind_on, \"%m %d %Y %H:%i:%s\"),'$$',remind_id) as remind_date "+
-            " FROM `onboarding_task_detail_user_assigned_new` as a " +
+            " FROM `onboarding_task_detail_user_assigned` as a " +
             " left join onboarding_task_users_available_dates as c on c.copied_task_id=a.copied_task_id " +
             " left join onboarding_task_provider_remind_on as d on " +
             " d.copied_task_id=a.copied_task_id and d.remind_on_status='1'" +
@@ -323,11 +323,11 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
 
             var query = "SELECT x.task_category_name,count(a.copied_task_id) as 'task_status', " +
 
-                "(select count(copied_task_id) from onboarding_task_detail_user_assigned_new where task_category_id=x.task_category_id and assigned_provider_id=?  and assign_status='1') as 'task_count'" +
+                "(select count(copied_task_id) from onboarding_task_detail_user_assigne where task_category_id=x.task_category_id and assigned_provider_id=?  and assign_status='1') as 'task_count'" +
 
                 " FROM onboarding_task_category as X " +
 
-                " left join onboarding_task_detail_user_assigned_new as a on " +
+                " left join onboarding_task_detail_user_assigned as a on " +
 
                 "a.task_category_id = x.task_category_id and a.`assigned_provider_id`=? and a.`overall_status`='0' and a.assign_status='1' " +
 
