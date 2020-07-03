@@ -1,6 +1,8 @@
+var path = require('path');
+
 module.exports = Object.freeze({
+    TASKFILECONSTANT : path.resolve('../')+'/devethos/task-listing/',
     CONSTTIMEZONE : " EST",
-    SECTIONFILEPATH: 'http://localhost/dev-ethos/category/',
-    SECTIONLISTURL: 'localhost:3000/keyinfo/sectionimage/',
-    SECTIONOVERLLDOWNLOAD: 'http://dev-ethos.enterpriseapplicationdevelopers.com:6005/Keysiteinfo/get_all_documents/'
+    SECTIONFILEPATH: path.resolve('../')+'/devethos/category/'
+    //SECTIONOVERLLDOWNLOAD: 'http://dev-ethos.enterpriseapplicationdevelopers.com:6005/Keysiteinfo/get_all_documents/',
 });

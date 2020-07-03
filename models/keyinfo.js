@@ -43,7 +43,11 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT * FROM `hospital_category_item` WHERE `category_id` = ? and status = ? limit ?,?",
+            connection.query("SELECT a.*,h.hospital_id FROM `hospital_category_item` as a " +
+
+                " left join hospital_category as h on h.id=a.category_id " +
+
+                "WHERE a.`category_id` = ? and status = ? limit ?,?",
                 [category_id,0,limit,items_page], (err, rows) => {
                     if(err) {
                         res.sendData = {"msg":'Server under maintaince',"statuscode":503};
@@ -63,7 +67,7 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                     {
                                                 imageDetails[pIloop] = {
                                                     "name":imageInfo[pIloop],
-                                                    "link":appconstant.SECTIONLISTURL+crypthex.encrypt(JSON.stringify(imageInfo[pIloop]))
+                                                    "link":crypthex.encrypt(appconstant.SECTIONFILEPATH+rows[pLoop].hospital_id+'/'+rows[pLoop].category_id+'/'+rows[pLoop].id+'/'+imageInfo[pIloop])
                                                 };
                                     }
                                 }
@@ -73,7 +77,7 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                     "section_name":rows[pLoop].item_name,
                                     "section_description":rows[pLoop].item_description,
                                     "image_details": imageDetails,
-                                    "overalldownload" : appconstant.SECTIONOVERLLDOWNLOAD+crypthex.encrypt(JSON.stringify(rows[pLoop].id))
+                                    "overalldownload" : JSON.stringify(rows[pLoop].id)
                                 };
                             }
                         }

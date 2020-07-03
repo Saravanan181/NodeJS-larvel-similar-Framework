@@ -4,7 +4,12 @@ const jwt = require("jsonwebtoken");
 var common = require("../traits/common");
 const onboarding = require("../models/onboarding");
 var crypthex = require("../endecrypt/crypthex");
-
+var async = require('async');
+var path = require('path');
+var formidable = require('formidable');
+const multer = require('multer');
+var fs = require('fs');
+var appconstant = require('../config/appconstant');
 
 /* GET users listing. */
 router.get('/list/:type/:pageno', function(req, res, next) {
@@ -92,6 +97,19 @@ router.post('/taskcommentinsert', function(req, res, next) {
     });
 });
 
+router.get('/fileslist/:id', function(req, res, next) {
+    var id = req.params.id;
+
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    var userInfo = jwt.verify(token, 'nodeethos576asdas6');
+    onboarding.getfileslistupd(userInfo.physican_id,id,req,res, function(details){
+        var details = {statuscode:200,"msg":"Comments inserted","list":details};
+        res.sendData = details;
+        next();
+    });
+});
+
 router.get('/typemenu', function(req, res, next) {
     var data = req.body.data;
 
@@ -103,6 +121,96 @@ router.get('/typemenu', function(req, res, next) {
         res.sendData = details;
         next();
     });
+});
+
+
+
+router.get('/taskimage/:filekey', function(req, res, next) {
+
+    var filekey = req.params.filekey;
+    var decryptfilekey = JSON.parse(crypthex.decrypt(filekey));
+        var dest = appconstant.TASKFILECONSTANT+decryptfilekey;
+        res.download(dest,decryptimagekey),function(err){
+            console.log(err);
+        };
+
+});
+
+
+var storage	=	multer.diskStorage({
+
+    destination: function (req, file, callback) {
+
+        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/provider-conversation-documents/';
+        if (!fs.existsSync(dirPath)){
+            fs.mkdirSync(dirPath,'0777');
+        }
+        req.directory = dirPath;
+
+        callback(null, dirPath);
+    },
+    filename: function (req, file, callback) {
+
+        var ext = file.originalname.split('.');
+        var fileextension = '.'+(ext[1]);
+        if(!fs.existsSync(req.directory+file.originalname)){
+            callback(null, file.originalname);
+         }else{
+             for(var j=1;j<=20;j++) {
+                 if(!fs.existsSync(req.directory+ext[0]+'_'+j+fileextension)){
+                     var filenameupdate = ext[0]+'_'+j+fileextension;
+                     break;
+                 }
+             }
+            callback(null, filenameupdate);
+        }
+
+    }
+});
+var upload = multer({ storage : storage }).array('taskfile',2);
+
+
+router.post('/taskimageupload', function(req, res, next) {
+
+    var taskid = req.body.taskid;
+
+    onboarding.gettypestatus(taskid,req,res, function(details){
+            var categoryfoldername = 'internalcredentialing';
+        if(details==2){
+            categoryfoldername = 'licensing';
+        }else if(details==3){
+            categoryfoldername = 'externalcredentialing';
+        }else if(details==4){
+            categoryfoldername = 'onboarding';
+        }
+
+        var dirPathCategory = appconstant.TASKFILECONSTANT+categoryfoldername;
+        if (!fs.existsSync(dirPathCategory)){
+            fs.mkdirSync(dirPathCategory,'0777');
+        }
+
+        req.categoryfoldername = categoryfoldername;
+
+        upload(req,res, function(err) {
+            console.log(req.body);
+            console.log(req.files.length);
+            if(err) {
+                var msg = 'Files uploaded fail,Please try again';
+                var details = {statuscode:400,"msg":msg};
+            }else{
+                var msg = 'Files uploaded successfully';
+                var details = {statuscode:200,"msg":msg};
+            }
+            res.sendData = details;
+            next();
+        });
+
+
+    });
+
+
+
+
 });
 
 

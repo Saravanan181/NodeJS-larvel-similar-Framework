@@ -3,6 +3,9 @@ var middleware = require('../middleware/reqresmiddleware');
 var crypthex = require("../endecrypt/crypthex");
 var appconstant = require("../config/appconstant");
 var common = require("../traits/common");
+var formidable = require('formidable');
+var async = require('async');
+
 // constructor
 const onboarding = function() {
 
@@ -371,5 +374,109 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
         }
     });
 }
+
+
+onboarding.getfileslistupd = (user_id,id,req,res, callback) => {
+
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+
+            var query = "select b.task_category_id,a.uploaded_document_id as 'file_id'," +
+                "a.`required_document` as 'download_file',a.`uploaded_document` as 'provider_file',a.`comments` as comments,DATE_FORMAT(DATE(a.`created_on`), \"%m-%d-%Y\") as 'date'," +
+                "'2' as 'type','0' as 'user_id'" +
+                " from onboarding_task_users_uploaded_document as a " +
+                " left join onboarding_task_detail_user_assigned as b on b.copied_task_id=a.copied_task_id " +
+                " where a.copied_task_id=? " +
+                " UNION " +
+
+                " SELECT b.task_category_id,a.`task_comment_id` as 'file_id'," +
+                "a.`attachment` as 'download_file','null' as 'provider_file',a.`comments` as comments,DATE_FORMAT(DATE(a.`created_on`), \"%m-%d-%Y\") as 'date','1' as 'type',a.`commented_user_id` as 'user_id'" +
+
+                " from onboarding_task_users_comments as a " +
+                " left join onboarding_task_detail_user_assigned as b on b.copied_task_id=a.copied_task_id " +
+                "WHERE a.`copied_task_id`=? and a.type=2 " ;
+
+            console.log(query);
+            connection.query(query,
+                [id,id], (err, rows) => {
+                    if(err) {
+                        console.log(err);
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+
+                        var details = [];
+                        //
+                        if(Array.isArray(rows) && rows.length){
+                            for(var pLoop=0;pLoop<rows.length;pLoop++)
+                            {
+                                var user_type = 1;  console.log(rows[pLoop].user_id);
+                                if(rows[pLoop].user_id==user_id){
+                                 console.log('fff');   user_type = 2;
+                                }
+
+                                var uploadfile_array = '';
+
+                                if(rows[pLoop].type==2){
+                                    uploadfile_array = {
+                                        "uploaded_file_name":rows[pLoop].provider_file,
+                                        "uploaded_file_path": crypthex.encrypt(common.taskfilelocation(id,rows[pLoop].type,rows[pLoop].task_category_id,2,rows[pLoop].provider_file)),
+                                        "uploaded_file_date" : rows[pLoop].date,
+                                    }
+                                }
+
+
+                                details[pLoop] = {
+                                    "file_id" : rows[pLoop].file_id,
+                                    "name":rows[pLoop].download_file,
+                                    "comments ":rows[pLoop].comments,
+                                    "uploaded_details" : uploadfile_array,
+                                    "file_path" : crypthex.encrypt(common.taskfilelocation(id,rows[pLoop].type,rows[pLoop].task_category_id,user_type,rows[pLoop].download_file)),
+                                    "type" : rows[pLoop].type
+                                };
+                            }
+                        }
+
+                        callback(details);
+                    }
+                });
+        }
+    });
+
+}
+
+
+onboarding.uploadtaskfile = (taskid,req,res, callback) => {
+
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+
+            var query = "SELECT `task_category_id` FROM `onboarding_task_detail_user_assigned` WHERE `copied_task_id`=?" ;
+
+            console.log(query);
+            connection.query(query,
+                [taskid], (err, rows) => {
+                    if(err) {
+                        console.log(err);
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+                        var details = [];
+                        callback(rows[0].task_category_id);
+                    }
+                });
+        }
+    });
+
+}
+
 
 module.exports = onboarding;

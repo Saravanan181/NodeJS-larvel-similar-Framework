@@ -3,9 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/ethos.iml" filepath="$PROJECT_DIR$/.idea/ethos.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/ethos_new.iml" filepath="$PROJECT_DIR$/../../XAMPP/xamppfiles/htdocs/dev-ethos/.idea/ethos_new.iml" />
-      <module fileurl="file://$USER_HOME$/Downloads/kap_api/.idea/kap_api.iml" filepath="$USER_HOME$/Downloads/kap_api/.idea/kap_api.iml" />
-      <module fileurl="file://$USER_HOME$/Downloads/winston-master/.idea/winston-master.iml" filepath="$USER_HOME$/Downloads/winston-master/.idea/winston-master.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../devethos/.idea/ethos_new.iml" filepath="$PROJECT_DIR$/../devethos/.idea/ethos_new.iml" />
     </modules>
   </component>
 </project>

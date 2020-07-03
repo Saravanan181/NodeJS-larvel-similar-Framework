@@ -5,8 +5,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="ethos_new" />
-    <orderEntry type="module" module-name="kap_api" />
     <orderEntry type="module" module-name="ethos_new" />
-    <orderEntry type="module" module-name="winston-master" />
+    <orderEntry type="module" module-name="ethos_new" />
+    <orderEntry type="module" module-name="ethos_new" />
   </component>
 </module>
