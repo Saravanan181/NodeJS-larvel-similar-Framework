@@ -15,7 +15,7 @@ const crypthex = function(cryptData) {
 
 
 crypthex.encrypt = (data) => {
-
+return data;
     var cipher = crypto.createCipheriv(algorithm, key, IV );
     let encrypted = cipher.update(data, 'utf8', 'hex');
     return encrypted += cipher.final('hex');
@@ -23,7 +23,7 @@ crypthex.encrypt = (data) => {
 }
 
 crypthex.decrypt = (data) => {
-
+return data;
     let decipher = crypto.createDecipheriv(algorithm, key, IV);
     let decrypted = decipher.update(data, 'hex', 'utf8');
     return decrypted + decipher.final('utf8');
