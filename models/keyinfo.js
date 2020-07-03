@@ -38,17 +38,20 @@ keyinfo.hospitalinfo = (hospital_id,callback) => {
 
 
 keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
+
+    console.log('sfsdf');
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT a.*,h.hospital_id FROM `hospital_category_item` as a " +
 
+            var query = "SELECT a.*,h.hospital_id FROM `hospital_category_item` as a " +
                 " left join hospital_category as h on h.id=a.category_id " +
+                " WHERE a.`category_id` = '"+category_id+"' and a.status ='0' limit ?,? ";
 
-                "WHERE a.`category_id` = ? and status = ? limit ?,?",
-                [category_id,0,limit,items_page], (err, rows) => {
+            connection.query(query,
+                [limit,items_page], (err, rows) => {
                     if(err) {
                         res.sendData = {"msg":'Server under maintaince',"statuscode":503};
                         middleware.beforeresponse(req,res);
