@@ -48,7 +48,7 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
 
             var query = "SELECT a.*,h.hospital_id FROM `hospital_category_item` as a " +
                 " left join hospital_category as h on h.id=a.category_id " +
-                " WHERE a.`category_id` = '"+category_id+"' and a.status ='0' limit ?,? ";
+                " WHERE a.`category_id` = '"+category_id+"' and a.status ='0' limit ?,?     ";
 
             connection.query(query,
                 [limit,items_page], (err, rows) => {
@@ -70,7 +70,7 @@ keyinfo.sectionlist = (category_id,limit,items_page,req,res, callback) => {
                                     {
                                                 imageDetails[pIloop] = {
                                                     "name":imageInfo[pIloop],
-                                                    "link":crypthex.encrypt(appconstant.SECTIONFILEPATH+rows[pLoop].hospital_id+'/'+rows[pLoop].category_id+'/'+rows[pLoop].id+'/'+imageInfo[pIloop])
+                                                    "link":crypthex.encrypt(rows[pLoop].hospital_id+'/'+rows[pLoop].category_id+'/'+rows[pLoop].id+'/'+imageInfo[pIloop])
                                                 };
                                     }
                                 }

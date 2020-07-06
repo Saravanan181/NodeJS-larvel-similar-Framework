@@ -97,13 +97,19 @@ router.post('/taskcommentinsert', function(req, res, next) {
     });
 });
 
-router.get('/fileslist/:id', function(req, res, next) {
+router.get('/fileslist/:type/:id/:pageno', function(req, res, next) {
     var id = req.params.id;
+    var type = req.params.type;
+    var pageno = req.params.pageno;
 
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     var userInfo = jwt.verify(token, 'nodeethos576asdas6');
-    onboarding.getfileslistupd(userInfo.physican_id,id,req,res, function(details){
+
+    var items_page = 4;
+    var limit = items_page*pageno;
+
+    onboarding.getfileslistupd(userInfo.physican_id,type,id,limit,items_page, req,res, function(details){
         var details = {statuscode:200,"msg":"Comments inserted","list":details};
         res.sendData = details;
         next();

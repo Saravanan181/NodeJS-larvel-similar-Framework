@@ -376,7 +376,7 @@ onboarding.gettypestatus = (userid,req,res, callback) => {
 }
 
 
-onboarding.getfileslistupd = (user_id,id,req,res, callback) => {
+onboarding.getfileslistupd = (user_id,type,id,limit,items_page, req,res, callback) => {
 
     sql.getConnection(function(err, connection) {
         if (err) {
@@ -384,24 +384,28 @@ onboarding.getfileslistupd = (user_id,id,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "select b.task_category_id,a.uploaded_document_id as 'file_id'," +
-                "a.`required_document` as 'download_file',a.`uploaded_document` as 'provider_file',a.`comments` as comments,DATE_FORMAT(DATE(a.`created_on`), \"%m-%d-%Y\") as 'date'," +
-                "'2' as 'type','0' as 'user_id'" +
-                " from onboarding_task_users_uploaded_document as a " +
-                " left join onboarding_task_detail_user_assigned as b on b.copied_task_id=a.copied_task_id " +
-                " where a.copied_task_id=? " +
-                " UNION " +
 
-                " SELECT b.task_category_id,a.`task_comment_id` as 'file_id'," +
-                "a.`attachment` as 'download_file','null' as 'provider_file',a.`comments` as comments,DATE_FORMAT(DATE(a.`created_on`), \"%m-%d-%Y\") as 'date','1' as 'type',a.`commented_user_id` as 'user_id'" +
 
-                " from onboarding_task_users_comments as a " +
-                " left join onboarding_task_detail_user_assigned as b on b.copied_task_id=a.copied_task_id " +
-                "WHERE a.`copied_task_id`=? and a.type=2 " ;
+                var query = "select b.task_category_id,a.uploaded_document_id as 'file_id'," +
+                    "a.`required_document` as 'download_file',a.`uploaded_document` as 'provider_file',a.`comments` as comments,DATE_FORMAT(DATE(a.`created_on`), \"%m-%d-%Y\") as 'date'," +
+                    "'2' as 'type','0' as 'user_id'" +
+                    " from onboarding_task_users_uploaded_document as a " +
+                    " left join onboarding_task_detail_user_assigned as b on b.copied_task_id=a.copied_task_id " +
+                    " where a.copied_task_id=? limit ?,? ";
+
+            if(type==2){
+                var query = " SELECT b.task_category_id,a.`task_comment_id` as 'file_id'," +
+                    "a.`attachment` as 'download_file','null' as 'provider_file',a.`comments` as comments,DATE_FORMAT(DATE(a.`created_on`), \"%m-%d-%Y\") as 'date','1' as 'type',a.`commented_user_id` as 'user_id'" +
+
+                    " from onboarding_task_users_comments as a " +
+                    " left join onboarding_task_detail_user_assigned as b on b.copied_task_id=a.copied_task_id " +
+                    "WHERE a.`copied_task_id`=? and a.type=2 limit ?,? " ;
+            }
+
 
             console.log(query);
             connection.query(query,
-                [id,id], (err, rows) => {
+                [id,limit,items_page], (err, rows) => {
                     if(err) {
                         console.log(err);
                         res.sendData = {"msg":'Server under maintaince',"statuscode":506};
@@ -419,7 +423,11 @@ onboarding.getfileslistupd = (user_id,id,req,res, callback) => {
                                  console.log('fff');   user_type = 2;
                                 }
 
-                                var uploadfile_array = '';
+                                var uploadfile_array = {
+                                    "uploaded_file_name": '',
+                                    "uploaded_file_path": '',
+                                    "uploaded_file_date" : '',
+                                }
 
                                 if(rows[pLoop].type==2){
                                     uploadfile_array = {
