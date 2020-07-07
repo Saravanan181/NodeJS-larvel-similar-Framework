@@ -147,7 +147,7 @@ var storage	=	multer.diskStorage({
 
     destination: function (req, file, callback) {
 
-        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/provider-conversation-documents/';
+        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/conversation-documents/provider-conversation-documents/';
         if (!fs.existsSync(dirPath)){
             fs.mkdirSync(dirPath,'0777');
         }
@@ -157,17 +157,31 @@ var storage	=	multer.diskStorage({
     },
     filename: function (req, file, callback) {
 
+        if(typeof req.body.filenamearray == 'undefined' || req.body.filenamearray==''){
+            var filenamearray = [];
+        }else{
+            var filenamearray = req.body.filenamearray;
+        }
+
         var ext = file.originalname.split('.');
         var fileextension = '.'+(ext[1]);
         if(!fs.existsSync(req.directory+file.originalname)){
+
+            // req.body.filenamearray.push(file.originalname);
+            filenamearray.push(file.originalname);
+
             callback(null, file.originalname);
          }else{
              for(var j=1;j<=20;j++) {
                  if(!fs.existsSync(req.directory+ext[0]+'_'+j+fileextension)){
                      var filenameupdate = ext[0]+'_'+j+fileextension;
+                     filenamearray.push(filenameupdate);
+                     // req.body.filenamearray.push(filenameupdate);
                      break;
                  }
              }
+            req.body.filenamearray = filenamearray;
+
             callback(null, filenameupdate);
         }
 
@@ -181,7 +195,7 @@ router.post('/taskimageupload', function(req, res, next) {
     var taskid = req.body.taskid;
 
     onboarding.gettypestatus(taskid,req,res, function(details){
-            var categoryfoldername = 'internalcredentialing';
+            var categoryfoldername = 'eagle-certification';
         if(details==2){
             categoryfoldername = 'licensing';
         }else if(details==3){
@@ -203,12 +217,125 @@ router.post('/taskimageupload', function(req, res, next) {
             if(err) {
                 var msg = 'Files uploaded fail,Please try again';
                 var details = {statuscode:400,"msg":msg};
+                res.sendData = details;
+                next();
             }else{
-                var msg = 'Files uploaded successfully';
-                var details = {statuscode:200,"msg":msg};
+                const authHeader = req.headers['authorization'];
+                const token = authHeader && authHeader.split(' ')[1];
+                var userInfo = jwt.verify(token, 'nodeethos576asdas6');
+                var fileslist = JSON.stringify(req.body.filenamearray);
+
+                var insertquerybuild = " ('"+req.body.taskid+"','"+userInfo.physican_id+"','2','"+fileslist+"')";
+
+                onboarding.updateimageuploadcomments(insertquerybuild,req,res, function(details){
+                    var msg = 'Files uploaded successfully';
+                    var details = {statuscode:200,"msg":msg};
+                    res.sendData = details;
+                    next();
+                });
+
+
             }
-            res.sendData = details;
-            next();
+
+        });
+
+
+    });
+
+
+
+
+});
+
+
+
+
+var storageadmin	=	multer.diskStorage({
+
+    destination: function (req, file, callback) {
+
+        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/task-documents/provider-conversation-documents/';
+        if (!fs.existsSync(dirPath)){
+            fs.mkdirSync(dirPath,'0777');
+        }
+        req.directory = dirPath;
+
+        callback(null, dirPath);
+    },
+    filename: function (req, file, callback) {
+
+
+        var ext = file.originalname.split('.');
+        var fileextension = '.'+(ext[1]);
+        if(!fs.existsSync(req.directory+file.originalname)){
+
+            // req.body.filenamearray.push(file.originalname);
+            req.body.filenamearray = file.originalname;
+
+            callback(null, file.originalname);
+        }else{
+            for(var j=1;j<=20;j++) {
+                if(!fs.existsSync(req.directory+ext[0]+'_'+j+fileextension)){
+                    var filenameupdate = ext[0]+'_'+j+fileextension;
+
+                    req.body.filenamearray = filenameupdate;
+
+                    break;
+                }
+            }
+
+            callback(null, filenameupdate);
+        }
+
+    }
+});
+var uploadadmin = multer({ storage : storageadmin }).single('taskadminfile');
+
+
+router.post('/taskadminimageupload', function(req, res, next) {
+
+    var taskid = req.body.taskid;
+
+    onboarding.gettypestatus(taskid,req,res, function(details){
+        var categoryfoldername = 'eagle-certification';
+        if(details==2){
+            categoryfoldername = 'licensing';
+        }else if(details==3){
+            categoryfoldername = 'externalcredentialing';
+        }else if(details==4){
+            categoryfoldername = 'onboarding';
+        }
+
+        var dirPathCategory = appconstant.TASKFILECONSTANT+categoryfoldername;
+        if (!fs.existsSync(dirPathCategory)){
+            fs.mkdirSync(dirPathCategory,'0777');
+        }
+
+        req.categoryfoldername = categoryfoldername;
+
+        uploadadmin(req,res, function(err) {
+
+            if(err) {
+                var msg = 'Files uploaded fail,Please try again';
+                var details = {statuscode:400,"msg":msg};
+                res.sendData = details;
+                next();
+            }else{
+                const authHeader = req.headers['authorization'];
+                const token = authHeader && authHeader.split(' ')[1];
+                var userInfo = jwt.verify(token, 'nodeethos576asdas6');
+                var filesname = req.body.filenamearray;
+                var uploadid = req.body.uploadid;
+                onboarding.updateimageadminupload(filesname,uploadid,req,res, function(details){
+                    var msg = 'Files uploaded successfully';
+                    var details = {statuscode:200,"msg":msg};
+                    res.sendData = details;
+                    next();
+                });
+
+
+            }
+
         });
 
 

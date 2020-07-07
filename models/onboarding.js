@@ -388,7 +388,7 @@ onboarding.getfileslistupd = (user_id,type,id,limit,items_page, req,res, callbac
 
                 var query = "select b.task_category_id,a.uploaded_document_id as 'file_id'," +
                     "a.`required_document` as 'download_file',a.`uploaded_document` as 'provider_file',a.`comments` as comments,DATE_FORMAT(DATE(a.`created_on`), \"%m-%d-%Y\") as 'date'," +
-                    "'2' as 'type','0' as 'user_id'" +
+                    "'2' as 'type','0' as 'user_id',a.uploaded_document_id" +
                     " from onboarding_task_users_uploaded_document as a " +
                     " left join onboarding_task_detail_user_assigned as b on b.copied_task_id=a.copied_task_id " +
                     " where a.copied_task_id=? limit ?,? ";
@@ -412,7 +412,7 @@ onboarding.getfileslistupd = (user_id,type,id,limit,items_page, req,res, callbac
                         middleware.beforeresponse(req,res);
                     }else{
                         connection.release();
-
+console.log(rows);
                         var details = [];
                         //
                         if(Array.isArray(rows) && rows.length){
@@ -427,6 +427,7 @@ onboarding.getfileslistupd = (user_id,type,id,limit,items_page, req,res, callbac
                                     "uploaded_file_name": '',
                                     "uploaded_file_path": '',
                                     "uploaded_file_date" : '',
+                                    "uploaded_id" : ''
                                 }
 
                                 if(rows[pLoop].type==2){
@@ -434,16 +435,41 @@ onboarding.getfileslistupd = (user_id,type,id,limit,items_page, req,res, callbac
                                         "uploaded_file_name":rows[pLoop].provider_file,
                                         "uploaded_file_path": crypthex.encrypt(common.taskfilelocation(id,rows[pLoop].type,rows[pLoop].task_category_id,2,rows[pLoop].provider_file)),
                                         "uploaded_file_date" : rows[pLoop].date,
+                                        "comments ":rows[pLoop].comments,
+                                        "uploaded_id" : rows[pLoop].uploaded_document_id
                                     }
                                 }
+
+                                var otherfiles_array = [];
+
+
+                                if(rows[pLoop].type==2){
+                                    otherfiles_array[0] = {
+                                        "name" : rows[pLoop].download_file,
+                                        "file_path" : crypthex.encrypt(common.taskfilelocation(id,rows[pLoop].type,rows[pLoop].task_category_id,user_type,rows[pLoop].download_file))
+                                    }
+                                }else if(rows[pLoop].type==1){
+
+                                    var splitDownloadfile = JSON.parse(rows[pLoop].download_file);
+
+
+                                    for(var tst= 0; tst<splitDownloadfile.length;tst++){
+                                        otherfiles_array[tst] = {
+                                            "name" : splitDownloadfile[tst],
+                                            "file_path" : crypthex.encrypt(common.taskfilelocation(id,rows[pLoop].type,rows[pLoop].task_category_id,user_type,splitDownloadfile[tst]))
+                                        }
+                                    }
+
+                                }
+
+
+
 
 
                                 details[pLoop] = {
                                     "file_id" : rows[pLoop].file_id,
-                                    "name":rows[pLoop].download_file,
-                                    "comments ":rows[pLoop].comments,
                                     "uploaded_details" : uploadfile_array,
-                                    "file_path" : crypthex.encrypt(common.taskfilelocation(id,rows[pLoop].type,rows[pLoop].task_category_id,user_type,rows[pLoop].download_file)),
+                                    "download_file" : otherfiles_array,
                                     "type" : rows[pLoop].type
                                 };
                             }
@@ -479,6 +505,63 @@ onboarding.uploadtaskfile = (taskid,req,res, callback) => {
                         connection.release();
                         var details = [];
                         callback(rows[0].task_category_id);
+                    }
+                });
+        }
+    });
+
+}
+
+onboarding.updateimageuploadcomments = (insertquerybuild,req,res, callback) => {
+
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+
+            var query = "INSERT INTO `onboarding_task_users_comments`( `copied_task_id`, `commented_user_id`, `type`, `attachment`) VALUES "+insertquerybuild ;
+
+            console.log(query);
+            connection.query(query,
+                [], (err, rows) => {
+                    if(err) {
+                        console.log(err);
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+                        var details = [];
+                        callback(rows);
+                    }
+                });
+        }
+    });
+
+}
+
+
+onboarding.updateimageadminupload = (filesname,uploadid,req,res, callback) => {
+
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+
+            var query = "UPDATE `onboarding_task_users_uploaded_document` SET `uploaded_document`='"+filesname+"' where `uploaded_document_id`='"+uploadid+"'";
+
+            console.log(query);
+            connection.query(query,
+                [], (err, rows) => {
+                    if(err) {
+                        console.log(err);
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":506};
+                        middleware.beforeresponse(req,res);
+                    }else{
+                        connection.release();
+                        var details = [];
+                        callback(rows);
                     }
                 });
         }
