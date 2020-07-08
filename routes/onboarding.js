@@ -147,7 +147,7 @@ var storage	=	multer.diskStorage({
 
     destination: function (req, file, callback) {
 
-        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/conversation-documents/provider-conversation-documents/';
+        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/'+taskid+'/conversation-documents/provider-conversation-documents/';
         if (!fs.existsSync(dirPath)){
             fs.mkdirSync(dirPath,'0777');
         }
@@ -258,7 +258,7 @@ var storageadmin	=	multer.diskStorage({
 
     destination: function (req, file, callback) {
 
-        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/task-documents/provider-conversation-documents/';
+        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/'+taskid+'/task-documents/provider-conversation-documents/';
         if (!fs.existsSync(dirPath)){
             fs.mkdirSync(dirPath,'0777');
         }
@@ -318,7 +318,7 @@ router.post('/taskadminimageupload', function(req, res, next) {
         if (!fs.existsSync(dirPathCategory+taskid+'/')){
             fs.mkdirSync(dirPathCategory+taskid+'/','0777');
         }
-        
+
         req.categoryfoldername = categoryfoldername;
 
         uploadadmin(req,res, function(err) {
