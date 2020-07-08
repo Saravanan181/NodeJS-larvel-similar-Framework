@@ -221,7 +221,7 @@ router.post('/taskimageupload/:taskid', function(req, res, next) {
             fs.mkdirSync(dirPathCategory+'/'+details.copied_task_id+'/conversation-documents/provider-conversation-documents','0777');
         }
 
-        req.categoryfoldername = dirPathCategory+'/'+details.copied_task_id+'/provider-conversation-documents/';
+        req.categoryfoldername = dirPathCategory+'/'+details.copied_task_id+'/conversation-documents/provider-conversation-documents/';
 
         upload(req,res, function(err) {
             console.log(req.body);
