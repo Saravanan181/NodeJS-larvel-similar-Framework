@@ -209,6 +209,10 @@ router.post('/taskimageupload', function(req, res, next) {
             fs.mkdirSync(dirPathCategory,'0777');
         }
 
+        if (!fs.existsSync(dirPathCategory+taskid+'/')){
+            fs.mkdirSync(dirPathCategory+taskid+'/','0777');
+        }
+
         req.categoryfoldername = categoryfoldername;
 
         upload(req,res, function(err) {
@@ -311,6 +315,10 @@ router.post('/taskadminimageupload', function(req, res, next) {
             fs.mkdirSync(dirPathCategory,'0777');
         }
 
+        if (!fs.existsSync(dirPathCategory+taskid+'/')){
+            fs.mkdirSync(dirPathCategory+taskid+'/','0777');
+        }
+        
         req.categoryfoldername = categoryfoldername;
 
         uploadadmin(req,res, function(err) {
