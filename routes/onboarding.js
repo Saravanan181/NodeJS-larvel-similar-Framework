@@ -146,7 +146,7 @@ router.get('/taskimage/:filekey', function(req, res, next) {
 var storage	=	multer.diskStorage({
 
     destination: function (req, file, callback) {
-
+        var taskid = req.body.taskid;
         var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/'+taskid+'/conversation-documents/provider-conversation-documents/';
         if (!fs.existsSync(dirPath)){
             fs.mkdirSync(dirPath,'0777');
@@ -257,6 +257,8 @@ router.post('/taskimageupload', function(req, res, next) {
 var storageadmin	=	multer.diskStorage({
 
     destination: function (req, file, callback) {
+
+        var taskid = req.body.taskid;
 
         var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/'+taskid+'/task-documents/provider-conversation-documents/';
         if (!fs.existsSync(dirPath)){
