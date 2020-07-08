@@ -492,7 +492,7 @@ onboarding.uploadtaskfile = (taskid,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "SELECT `task_category_id` FROM `onboarding_task_detail_user_assigned` WHERE `copied_task_id`=?" ;
+            var query = "SELECT `task_category_id`,copied_task_id FROM `onboarding_task_detail_user_assigned` WHERE `copied_task_id`=?" ;
 
             console.log(query);
             connection.query(query,
@@ -504,7 +504,7 @@ onboarding.uploadtaskfile = (taskid,req,res, callback) => {
                     }else{
                         connection.release();
                         var details = [];
-                        callback(rows[0].task_category_id);
+                        callback(rows[0]);
                     }
                 });
         }

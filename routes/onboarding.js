@@ -146,11 +146,9 @@ router.get('/taskimage/:filekey', function(req, res, next) {
 var storage	=	multer.diskStorage({
 
     destination: function (req, file, callback) {
-        var taskid = req.body.taskid;
-        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/'+taskid+'/conversation-documents/provider-conversation-documents/';
-        if (!fs.existsSync(dirPath)){
-            fs.mkdirSync(dirPath,'0777');
-        }
+
+        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername;
+
         req.directory = dirPath;
 
         callback(null, dirPath);
@@ -190,17 +188,19 @@ var storage	=	multer.diskStorage({
 var upload = multer({ storage : storage }).array('taskfile',2);
 
 
-router.post('/taskimageupload', function(req, res, next) {
+router.post('/taskimageupload/:taskid', function(req, res, next) {
 
-    var taskid = req.body.taskid;
+    var taskid = req.params.taskid;
 
-    onboarding.gettypestatus(taskid,req,res, function(details){
+    onboarding.uploadtaskfile(taskid,req,res, function(details){
+
+        console.log(details.task_category_id);
             var categoryfoldername = 'eagle-certification';
-        if(details==2){
+        if(details.task_category_id==2){
             categoryfoldername = 'licensing';
-        }else if(details==3){
+        }else if(details.task_category_id==3){
             categoryfoldername = 'externalcredentialing';
-        }else if(details==4){
+        }else if(details.task_category_id==4){
             categoryfoldername = 'onboarding';
         }
 
@@ -209,11 +209,19 @@ router.post('/taskimageupload', function(req, res, next) {
             fs.mkdirSync(dirPathCategory,'0777');
         }
 
-        if (!fs.existsSync(dirPathCategory+taskid+'/')){
-            fs.mkdirSync(dirPathCategory+taskid+'/','0777');
+        if (!fs.existsSync(dirPathCategory+'/'+details.copied_task_id+'/')){
+            fs.mkdirSync(dirPathCategory+'/'+details.copied_task_id+'/','0777');
         }
 
-        req.categoryfoldername = categoryfoldername;
+        if (!fs.existsSync(dirPathCategory+'/'+details.copied_task_id+'/conversation-documents')){
+            fs.mkdirSync(dirPathCategory+'/'+details.copied_task_id+'/conversation-documents','0777');
+        }
+
+        if (!fs.existsSync(dirPathCategory+'/'+details.copied_task_id+'/conversation-documents/provider-conversation-documents')){
+            fs.mkdirSync(dirPathCategory+'/'+details.copied_task_id+'/conversation-documents/provider-conversation-documents','0777');
+        }
+
+        req.categoryfoldername = dirPathCategory+'/'+details.copied_task_id+'/provider-conversation-documents/';
 
         upload(req,res, function(err) {
             console.log(req.body);
@@ -258,12 +266,8 @@ var storageadmin	=	multer.diskStorage({
 
     destination: function (req, file, callback) {
 
-        var taskid = req.body.taskid;
+        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername;
 
-        var dirPath = appconstant.TASKFILECONSTANT+req.categoryfoldername+'/'+taskid+'/task-documents/provider-conversation-documents/';
-        if (!fs.existsSync(dirPath)){
-            fs.mkdirSync(dirPath,'0777');
-        }
         req.directory = dirPath;
 
         callback(null, dirPath);
@@ -298,30 +302,39 @@ var storageadmin	=	multer.diskStorage({
 var uploadadmin = multer({ storage : storageadmin }).single('taskadminfile');
 
 
-router.post('/taskadminimageupload', function(req, res, next) {
+router.post('/taskadminimageupload/:taskid', function(req, res, next) {
 
-    var taskid = req.body.taskid;
+    var taskid = req.params.taskid;
 
-    onboarding.gettypestatus(taskid,req,res, function(details){
+    onboarding.uploadtaskfile(taskid,req,res, function(details){
         var categoryfoldername = 'eagle-certification';
-        if(details==2){
+        if(details.task_category_id==2){
             categoryfoldername = 'licensing';
-        }else if(details==3){
+        }else if(details.task_category_id==3){
             categoryfoldername = 'externalcredentialing';
-        }else if(details==4){
+        }else if(details.task_category_id==4){
             categoryfoldername = 'onboarding';
         }
 
         var dirPathCategory = appconstant.TASKFILECONSTANT+categoryfoldername;
+
         if (!fs.existsSync(dirPathCategory)){
             fs.mkdirSync(dirPathCategory,'0777');
         }
 
-        if (!fs.existsSync(dirPathCategory+taskid+'/')){
-            fs.mkdirSync(dirPathCategory+taskid+'/','0777');
+        if (!fs.existsSync(dirPathCategory+'/'+details.copied_task_id+'/')){
+            fs.mkdirSync(dirPathCategory+'/'+details.copied_task_id+'/','0777');
         }
 
-        req.categoryfoldername = categoryfoldername;
+        if (!fs.existsSync(dirPathCategory+'/'+details.copied_task_id+'/task-documents/')){
+            fs.mkdirSync(dirPathCategory+'/'+details.copied_task_id+'/task-documents/','0777');
+        }
+
+        if (!fs.existsSync(dirPathCategory+'/'+details.copied_task_id+'/task-documents/provider-task-documents/')){
+            fs.mkdirSync(dirPathCategory+'/'+details.copied_task_id+'/task-documents/provider-task-documents/','0777');
+        }
+
+        req.categoryfoldername = dirPathCategory+'/'+details.copied_task_id+'/task-documents/provider-task-documents/';
 
         uploadadmin(req,res, function(err) {
 
