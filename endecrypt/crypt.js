@@ -15,7 +15,7 @@ const crypt = function(cryptData) {
 
 
 crypt.encrypt = (data,callback) => {
-console.log(data);
+
     var cipher = crypto.createCipheriv(algorithm, key, IV );
     let encrypted = cipher.update(data, 'utf8', 'base64');
      encrypted += cipher.final('base64');
@@ -31,5 +31,23 @@ crypt.decrypt = (data,callback) => {
 
 }
 
+
+crypt.encryptreturn = (data) => {
+    console.log(data);
+    var cipher = crypto.createCipheriv(algorithm, key, IV );
+    let encrypted = cipher.update(data, 'utf8', 'base64');
+    encrypted += cipher.final('base64');
+    return encrypted;
+
+}
+
+
+crypt.decryptreturn = (data) => {
+
+    let decipher = crypto.createDecipheriv(algorithm, key, IV);
+    let decrypted = decipher.update(data, 'base64', 'utf8');
+    return decrypted + decipher.final('utf8');
+
+}
 
 module.exports = crypt;

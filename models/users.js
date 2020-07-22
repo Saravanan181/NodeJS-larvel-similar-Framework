@@ -18,14 +18,17 @@ users.info = (info,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT * FROM users where email_id =? and otp=?",
-                [info.email, info.otp], (err, userData) => {
+            var query = "SELECT * FROM app_users where username ='"+info.email+"' and password='"+info.password+"' and is_active=1";
+            console.log(query);
+            connection.query(query,
+                [], (err, userData) => {
+
                     if(err) {
                         var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
                         logconf.writelog(logdata);
                         res.sendData = {"msg":'Server under maintaince',"statuscode":503};
                         middleware.beforeresponse(req,res);
-                    }else{
+                    }else{console.log(userData);
                         connection.release();
                         callback(userData);
                     }
@@ -35,64 +38,50 @@ users.info = (info,req,res, callback) => {
 
 }
 
-users.hospital = (info,req,res, callback) => {
+users.resetpassword = (resetpassword,req,res, callback) => {
+
     sql.getConnection(function(err, connection) {
         if (err) {
+            var logdata = {"type":'error',"data":err,"customsg":  "database connection error" };
+            logconf.writelog(logdata);
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
-        }else{}
-        // console.log('ddd');
-        connection.query("SELECT hl.hospital_id,hl.hospital_name FROM `add_physician_hospital` as aph " +
-            "left join hospital_list as hl on aph.hospital_id=hl.hospital_id " +
-            "WHERE aph.`physician_id`=? and hl.is_Active=?",
-            [info,1], (err, rows) => {
-                if (err) {
+        }else{
+            connection.query("UPDATE `app_users` SET `password`='"+resetpassword.password+"',`reset_password`=1 where id='"+resetpassword.id+"'",
+                [], (err, userData) => {
+                if(err) {
                     var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
                     logconf.writelog(logdata);
                     res.sendData = {"msg":'Server under maintaince',"statuscode":503};
                     middleware.beforeresponse(req,res);
                 }else{
                     connection.release();
-
-                    var hospitalList = [];
-
-                    if(Array.isArray(rows) && rows.length){
-                        for(var pIloop=0;pIloop<rows.length;pIloop++)
-                        {
-                            if(rows[pIloop]){
-                                    hospitalList[pIloop] = {
-                                        "hospital_id":crypthex.encrypt(JSON.stringify(rows[pIloop].hospital_id)),
-                                        "hospital_name":rows[pIloop].hospital_name
-                                    };
-                            }
-                        }
-                    }
-
-
-                    callback(hospitalList);
-                }
-            });
+            callback(userData);
+        }
+        });
+        }
     });
+
 }
 
-users.validateUser = (info,req,res, callback) => {
+users.validateUser = (info,req,res, callback) => {  console.log(info);
     sql.getConnection(function(err, connection) {
         if (err) {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT * FROM users where email_id =?",
+            connection.query("SELECT * FROM app_users where username =?",
                 [info.username], (err, userData) => {
-                    if(err){
-                        var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
-                        logconf.writelog(logdata);
-                        res.sendData = {"msg":'Server under maintaince',"statuscode":503};
-                        middleware.beforeresponse(req,res);
-                    }else{
-                        connection.release();
-                        callback(userData);
-                    }
-                });
+                if(err){
+                    var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
+                    logconf.writelog(logdata);
+                    res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                    middleware.beforeresponse(req,res);
+                }else{
+                    connection.release();
+            callback(userData);
+        }
+        });
         }
     });
 }

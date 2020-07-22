@@ -19,14 +19,14 @@ sendmail.send = (data) => {
     });
 
     let info = transporter.sendMail({
-        from: 'eagletelemedicine@noreply.com', // sender address
-        to: data.feedbackmail, // list of receivers
-        subject: data.title, // Subject line
+        from: 'amble@noreply.com', // sender address
+        to: data.mail, // list of receivers
+        subject: data.subject, // Subject line
         // text: "Hello world?", // plain text body
-        html: data.subject // html body
+        html: data.html // html body
     });
 
-    // return info;
+    return info;
 
 }
 

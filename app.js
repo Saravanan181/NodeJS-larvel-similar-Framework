@@ -5,6 +5,7 @@ var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
 const jwt = require("jsonwebtoken");
 var logconf = require('./config/logconf');
+var bodyParser = require('body-parser');
 
 //middleware
 var middleware = require('./middleware/reqresmiddleware');
@@ -14,9 +15,6 @@ var http = require('http');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var enDecryptRouter = require('./routes/endecrypt');
-var keyinfoRouter = require('./routes/keyinfo');
-var clinicalactivityRouter = require('./routes/clinicalactivity');
-var onboardingRouter = require('./routes/onboarding')
 var logRouter = require('./routes/logaccess');
 
 
@@ -44,12 +42,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/',authenticateToken, indexRouter);
 
+app.use(bodyParser.urlencoded());
+
 
 // users details
 app.use('/users',authenticateToken,middleware.afterrequest, usersRouter, middleware.beforeresponse);
-app.use('/keyinfo',authenticateToken,middleware.afterrequest, keyinfoRouter, middleware.beforeresponse);
-app.use('/clinicalactivity',authenticateToken,middleware.afterrequest, clinicalactivityRouter, middleware.beforeresponse);
-app.use('/onboarding',authenticateToken,middleware.afterrequest, onboardingRouter, middleware.beforeresponse);
+// app.use('/keyinfo',authenticateToken,middleware.afterrequest, keyinfoRouter, middleware.beforeresponse);
+// app.use('/clinicalactivity',authenticateToken,middleware.afterrequest, clinicalactivityRouter, middleware.beforeresponse);
+// app.use('/onboarding',authenticateToken,middleware.afterrequest, onboardingRouter, middleware.beforeresponse);
 //keyinfo details
 
 
@@ -57,6 +57,7 @@ app.use('/onboarding',authenticateToken,middleware.afterrequest, onboardingRoute
 
 app.use('/crypt',enDecryptRouter);
 app.use('/log',logRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -104,7 +105,7 @@ var reqpath = req.path.split('/')[1];console.log(reqpath);
             }else{
 
                 userModel.validateUser(user,req,res,function(userDetails){
-                    if(userDetails[0].email_id===user.username){
+                    if(userDetails[0].username===user.username){
                         next();
                     }else{
                         res.sendData  = {"msg":"Invalid User","statuscode":401};
