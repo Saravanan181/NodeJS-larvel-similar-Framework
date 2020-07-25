@@ -47,7 +47,36 @@ users.resetpassword = (resetpassword,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("UPDATE `app_users` SET `password`='"+resetpassword.password+"',`reset_password`=1 where id='"+resetpassword.id+"'",
+
+            var query = "UPDATE `app_users` SET `password`='"+resetpassword.password+"',`reset_password`=1 where username='"+resetpassword.username+"'";
+            console.log(query);
+            connection.query(query,
+                [], (err, userData) => {
+                if(err) {
+                    var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
+                    logconf.writelog(logdata);
+                    res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                    middleware.beforeresponse(req,res);
+                }else{
+                    connection.release();
+            callback(userData);
+        }
+        });
+        }
+    });
+
+}
+
+users.chpss = (changepassword,req,res, callback) => {
+
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            var logdata = {"type":'error',"data":err,"customsg":  "database connection error" };
+            logconf.writelog(logdata);
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+            connection.query("UPDATE `app_users` SET `password`='"+changepassword.password+"',`reset_password`=0 where id='"+changepassword.id+"'",
                 [], (err, userData) => {
                 if(err) {
                     var logdata = {"type":'error',"data":err,"customsg":  "Query error" };

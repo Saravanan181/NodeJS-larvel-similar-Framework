@@ -9,16 +9,11 @@ reqresmiddleware.afterrequest =  (req, res, next) => {
     if(req.body.data){
         var data = req.body.data;
 
-      var test =   'test@gmail.com';
-
-        crypt.encrypt(test,function(decrypted){
-            console.log(decrypted);
-        });
-
         crypt.decrypt(data,function(decrypted){
             var logdata = {"type":'access',"data":decrypted,"customsg":req.path + ' "path requested - requested Data" '};
             logconf.writelog(logdata);
             req.body.data = JSON.parse(decrypted);
+
             next()
         });
     }else{

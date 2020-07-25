@@ -16,6 +16,7 @@ var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var enDecryptRouter = require('./routes/endecrypt');
 var logRouter = require('./routes/logaccess');
+var cmsRouter = require('./routes/cms');
 
 
 
@@ -57,6 +58,7 @@ app.use('/users',authenticateToken,middleware.afterrequest, usersRouter, middlew
 
 app.use('/crypt',enDecryptRouter);
 app.use('/log',logRouter);
+app.use('/cms',cmsRouter);
 
 
 // catch 404 and forward to error handler
@@ -80,7 +82,7 @@ function authenticateToken(req, res, next) {
 
 
 var reqpath = req.path.split('/')[1];console.log(reqpath);
-    if(reqpath == 'login' || reqpath == 'sectionimage'){
+    if(reqpath == 'passwordreset' || reqpath == 'login'){
         next()
     }else{
 
