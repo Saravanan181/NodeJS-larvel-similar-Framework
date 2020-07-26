@@ -17,7 +17,7 @@ var usersRouter = require('./routes/users');
 var enDecryptRouter = require('./routes/endecrypt');
 var logRouter = require('./routes/logaccess');
 var cmsRouter = require('./routes/cms');
-
+var patientRouter = require('./routes/patient');
 
 
 //models
@@ -48,6 +48,7 @@ app.use(bodyParser.urlencoded());
 
 // users details
 app.use('/users',authenticateToken,middleware.afterrequest, usersRouter, middleware.beforeresponse);
+app.use('/patient',authenticateToken,middleware.afterrequest, patientRouter, middleware.beforeresponse);
 // app.use('/keyinfo',authenticateToken,middleware.afterrequest, keyinfoRouter, middleware.beforeresponse);
 // app.use('/clinicalactivity',authenticateToken,middleware.afterrequest, clinicalactivityRouter, middleware.beforeresponse);
 // app.use('/onboarding',authenticateToken,middleware.afterrequest, onboardingRouter, middleware.beforeresponse);
