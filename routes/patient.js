@@ -15,12 +15,24 @@ router.post('/add', function(req, res, next) {
 
     patient.add(data,req,res,function(userDetails){
 
-            var Userinfo = {msg:"Patient added successfully",statuscode:200};
+            var Userinfo = {msg:"Patient added successfully",statuscode:200,"patient_id":data.patientid};
             res.sendData = Userinfo;
             next();
 
     });
 });
 
+
+router.get('/search/:id', function(req, res, next) {
+    var patient_id = req.params.id;
+
+    patient.search(patient_id,req,res,function(patientDetail){
+
+        var Info = {msg:"Patient details",statuscode:200,"details":patientDetail[0]};
+        res.sendData = Info;
+        next();
+
+    });
+});
 
 module.exports = router;

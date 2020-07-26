@@ -54,7 +54,7 @@ router.post('/passwordreset', function(req, res, next) {
 });
 
 
-router.get('/changepassword', function(req, res, next) {
+router.post('/changepassword', function(req, res, next) {
     var data = req.body.data;
 
     const authHeader = req.headers['authorization'];
@@ -72,7 +72,7 @@ router.get('/changepassword', function(req, res, next) {
 
         var sendInfo = smtp.send(dataarray);
 
-        var Userinfo = {msg:"Temporary password send to mail,",statuscode:200};
+        var Userinfo = {msg:"Password changed successfully",statuscode:200};
         res.sendData = Userinfo;
         next();
 

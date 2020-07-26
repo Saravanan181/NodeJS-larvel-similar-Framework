@@ -38,4 +38,37 @@ patient.add = (info,req,res, callback) => {
 
 }
 
+
+
+patient.search = (id,req,res, callback) => {
+
+
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            var logdata = {"type":'error',"data":err,"customsg":  "database connection error" };
+            logconf.writelog(logdata);
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+            var query = "SELECT * FROM `patient` WHERE `patient_id` = ?";
+            console.log(query);
+            connection.query(query,
+                [id], (err, patientDetail) => {
+
+                if(err) {
+                    var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
+                    logconf.writelog(logdata);
+                    res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                    middleware.beforeresponse(req,res);
+                }else{console.log(patientDetail);
+            connection.release();
+            callback(patientDetail);
+        }
+        });
+        }
+    });
+
+}
+
+
 module.exports = patient;
