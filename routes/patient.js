@@ -28,7 +28,7 @@ router.get('/search/:id', function(req, res, next) {
 
     patient.search(patient_id,req,res,function(patientDetail){
 
-        var Info = {msg:"Patient details",statuscode:200,"details":patientDetail[0]};
+        var Info = {msg:"Patient Details List",statuscode:200,"details":patientDetail};
         res.sendData = Info;
         next();
 

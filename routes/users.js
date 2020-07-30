@@ -79,4 +79,26 @@ router.post('/changepassword', function(req, res, next) {
 
     });
 });
+
+
+router.get('/logout', function(req, res, next) {
+
+
+    const authHeader = req.headers['authorization'];
+    const token = authHeader && authHeader.split(' ')[1];
+    // var userInfo = jwt.verify(token, 'nodeethos576asdas6');
+
+    if(jwt.destroy(token)){
+
+        console.log('done');
+
+    }
+
+
+});
+
+
+
+
+
 module.exports = router;

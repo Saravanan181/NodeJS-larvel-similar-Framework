@@ -50,10 +50,10 @@ patient.search = (id,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "SELECT * FROM `patient` WHERE `patient_id` = ?";
+            var query = "SELECT * FROM `patient` WHERE `patient_id`  LIKE '%"+id+"%'";
             console.log(query);
             connection.query(query,
-                [id], (err, patientDetail) => {
+                [], (err, patientDetail) => {
 
                 if(err) {
                     var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
