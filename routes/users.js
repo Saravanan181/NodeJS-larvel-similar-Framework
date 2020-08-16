@@ -5,16 +5,18 @@ const Users = require("../models/users.js");
 var common = require("../traits/common");
 var crypt = require("../endecrypt/crypt");
 var smtp = require("../traits/sendmail");
+var appconstant = require("../config/appconstant");
+
 
 /* GET users listing. */
 router.post('/login', function(req, res, next) {
     var data = req.body.data;
-    var Userinfo = {email:data.username, password:crypt.encryptreturn(data.password)};
+    var Userinfo = {email:data.username, password:crypt.encryptreturn(data.password), orgid:res.orgData.id};
     Users.info(Userinfo,req,res,function(userDetails){
         if(Array.isArray(userDetails) && userDetails.length){
-            const token = jwt.sign({ username: userDetails[0].username,id:userDetails[0].id,  name: userDetails[0].name }, 'nodeethos576asdas6',{ expiresIn: 60*60*5, algorithm: "HS256" });
-            var Userinfo = {statuscode:200,msg:"Login Successfull",username:userDetails[0].username, reset_password:userDetails[0].reset_password,
-                first_name:userDetails[0].first_name,last_name:userDetails[0].last_name, token:token};
+            const token = jwt.sign({ email: userDetails[0].email,id:userDetails[0].physiotherapy_id,  name: userDetails[0].name }, appconstant.JWTTOKENUSER ,{ expiresIn: 60*60*5, algorithm: "HS256" });
+            var Userinfo = {statuscode:200,msg:"Login Successfull",email: userDetails[0].email,id:userDetails[0].physiotherapy_id,
+                name: userDetails[0].name, reset_password:userDetails[0].reset_password, token:token};
             res.sendData = Userinfo;
             next();
         }else{
@@ -31,7 +33,7 @@ router.post('/passwordreset', function(req, res, next) {
 
     var resetpasswordD = common.randomstring(8,'#aA');
 
-    var resetpassword = {password:crypt.encryptreturn(resetpasswordD), username:data.username};
+    var resetpassword = {password:crypt.encryptreturn(resetpasswordD), username:data.username, orgid:res.orgData.id };
     Users.resetpassword(resetpassword,req,res,function(userDetails){
 
         if(userDetails.changedRows==1){
@@ -57,20 +59,10 @@ router.post('/passwordreset', function(req, res, next) {
 router.post('/changepassword', function(req, res, next) {
     var data = req.body.data;
 
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    var userInfo = jwt.verify(token, 'nodeethos576asdas6');
-
     var resetpasswordD = data.password;
 
-    var resetpassword = {password:crypt.encryptreturn(resetpasswordD), id:userInfo.id};
+    var resetpassword = {password:crypt.encryptreturn(resetpasswordD), id:res.userData.id, orgid:res.orgData.id};
     Users.chpss(resetpassword,req,res,function(userDetails){
-
-        var htmltext = 'Use the tempory password to login - '+resetpasswordD;
-
-        var dataarray = {mail:userInfo.username,subject: 'Amble reset password' , html: htmltext};
-
-        var sendInfo = smtp.send(dataarray);
 
         var Userinfo = {msg:"Password changed successfully",statuscode:200};
         res.sendData = Userinfo;

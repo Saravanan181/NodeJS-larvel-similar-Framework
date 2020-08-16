@@ -18,7 +18,7 @@ users.info = (info,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "SELECT * FROM app_users where username ='"+info.email+"' and password='"+info.password+"' and is_active=1";
+            var query = "SELECT * FROM physiotherapy where email ='"+info.email+"' and organization_id ='"+info.orgid+"' and password='"+info.password+"' and status=1";
             console.log(query);
             connection.query(query,
                 [], (err, userData) => {
@@ -48,7 +48,7 @@ users.resetpassword = (resetpassword,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "UPDATE `app_users` SET `password`='"+resetpassword.password+"',`reset_password`=1 where username='"+resetpassword.username+"'";
+            var query = "UPDATE `physiotherapy` SET `password`='"+resetpassword.password+"',`reset_password`=1 where email='"+resetpassword.username+"' and organization_id ='"+resetpassword.orgid+"' ";
             console.log(query);
             connection.query(query,
                 [], (err, userData) => {
@@ -76,7 +76,10 @@ users.chpss = (changepassword,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("UPDATE `app_users` SET `password`='"+changepassword.password+"',`reset_password`=0 where id='"+changepassword.id+"'",
+
+            var query = "UPDATE `physiotherapy` SET `password`='"+changepassword.password+"',`reset_password`=0 where physiotherapy_id='"+changepassword.id+"'  and organization_id ='"+changepassword.orgid+"' ";
+            console.log(query);
+            connection.query( query,
                 [], (err, userData) => {
                 if(err) {
                     var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
@@ -99,8 +102,8 @@ users.validateUser = (info,req,res, callback) => {  console.log(info);
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            connection.query("SELECT * FROM app_users where username =?",
-                [info.username], (err, userData) => {
+            connection.query("SELECT * FROM physiotherapy where physiotherapy_id =?  and organization_id ='"+res.orgData.id+"' ",
+                [info.id], (err, userData) => {
                 if(err){
                     var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
                     logconf.writelog(logdata);

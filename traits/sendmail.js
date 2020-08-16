@@ -13,13 +13,13 @@ sendmail.send = (data) => {
         port: 465,
         secure: true, // true for 465, false for other ports
         auth: {
-            user: 'no.reply.ethos09@gmail.com', // generated ethereal user
-            pass: 'etho5@09' // generated ethereal password
+            user: 'noreply.amble@gmail.com', // generated ethereal user
+            pass: 'cewcttxkusqrcubj' // generated ethereal password
         }
     });
 
     let info = transporter.sendMail({
-        from: 'amble@noreply.com', // sender address
+        from: 'noreply.amble@gmail.com', // sender address
         to: data.mail, // list of receivers
         subject: data.subject, // Subject line
         // text: "Hello world?", // plain text body
