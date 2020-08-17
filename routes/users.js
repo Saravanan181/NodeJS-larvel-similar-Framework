@@ -44,10 +44,11 @@ router.post('/passwordreset', function(req, res, next) {
             var sendInfo = smtp.send(dataarray);
             console.log('mail');
             var Userinfo = {msg:"Temporary password send to mail - "+common.censorEmail(data.username),statuscode:200};
+        }else{
+            var Userinfo = {msg:"Please try to reset again with proper User/Organization",statuscode:403};
         }
 
 
-        var Userinfo = {msg:"Please try to reset again with proper User/Organization",statuscode:403};
 
         res.sendData = Userinfo;
         next();
