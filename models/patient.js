@@ -16,8 +16,8 @@ patient.add = (info,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "INSERT INTO `patient`(`organization_id`,`patient_id`, `patient_name`, `gender`, `age`, `time_post_stokes`, `walking_speed`, `notes`) " +
-                "VALUES ('"+info.orgid+"','"+info.patientid+"','"+info.name+"','"+info.gender+"','"+info.age+"'," +
+            var query = "INSERT INTO `patient`(`organization_id`,`patient_id`, `patient_name`, `gender`, `dob`, `time_post_stokes`, `walking_speed`, `notes`) " +
+                "VALUES ('"+info.orgid+"','"+info.patientid+"','"+info.name+"','"+info.gender+"','"+info.dob+"'," +
                 "'"+info.time_post_stroke+"','"+info.walking_speed+"','"+info.notes+"')";
             console.log(query);
             connection.query(query,
