@@ -16,8 +16,8 @@ patient.add = (info,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "INSERT INTO `patient`(`patient_id`, `patient_name`, `gender`, `age`, `time_post_stokes`, `walking_speed`, `notes`) " +
-                "VALUES ('"+info.patientid+"','"+info.name+"','"+info.gender+"','"+info.age+"'," +
+            var query = "INSERT INTO `patient`(`organization_id`,`patient_id`, `patient_name`, `gender`, `age`, `time_post_stokes`, `walking_speed`, `notes`) " +
+                "VALUES ('"+info.orgid+"','"+info.patientid+"','"+info.name+"','"+info.gender+"','"+info.age+"'," +
                 "'"+info.time_post_stroke+"','"+info.walking_speed+"','"+info.notes+"')";
             console.log(query);
             connection.query(query,
@@ -40,7 +40,7 @@ patient.add = (info,req,res, callback) => {
 
 
 
-patient.search = (id,req,res, callback) => {
+patient.search = (orgid, id, req, res, callback) => {
 
 
     sql.getConnection(function(err, connection) {
@@ -50,7 +50,7 @@ patient.search = (id,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "SELECT * FROM `patient` WHERE `patient_id`  LIKE '%"+id+"%'";
+            var query = "SELECT * FROM `patient` WHERE `patient_id`  LIKE '%"+id+"%' and organization_id='"+orgid+"'";
             console.log(query);
             connection.query(query,
                 [], (err, patientDetail) => {
