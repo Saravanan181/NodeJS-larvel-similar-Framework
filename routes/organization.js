@@ -16,7 +16,7 @@ router.get('/scan/:id', function(req, res, next) {
 
         if(Array.isArray(organizationDetails) && organizationDetails.length){
             const token = jwt.sign({ name: organizationDetails[0].name,email:organizationDetails[0].email, id:organizationDetails[0].organization_id }, appconstant.JWTTOKENORGANIZATION ,{ expiresIn: 60*60*5, algorithm: "HS256" });
-            var orginfo = {statuscode:200,msg:"QR-code Successfull",name: organizationDetails[0].name,email:organizationDetails[0].email, token:token};
+            var orginfo = {statuscode:200,msg:"QR-code Successfull",name: organizationDetails[0].name,email:organizationDetails[0].email,location:organizationDetails[0].location, token:token};
             res.sendData = orginfo;
             next();
         }else{
