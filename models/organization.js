@@ -2,6 +2,8 @@ const sql = require("./mysqlconnect.js");
 var middleware = require('../middleware/reqresmiddleware');
 var crypthex = require("../endecrypt/crypthex");
 var logconf = require("../config/logconf");
+var appconstant = require("../config/appconstant");
+
 // constructor
 const organization = function(organization) {
 
@@ -16,7 +18,10 @@ organization.info = (id, req, res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "SELECT * FROM organization where organization_id ='"+id+"' and status=1";
+            var query = "SELECT CAST(AES_DECRYPT(`name`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as name," +
+                " CAST(AES_DECRYPT(`email`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as email," +
+                "  CAST(AES_DECRYPT(`location`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as location, organization_id " +
+                " FROM organization where barcode ='"+id+"' and status=1";
             console.log(query);
             connection.query(query,
                 [], (err, organizationData) => {

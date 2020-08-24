@@ -11,11 +11,11 @@ var appconstant = require("../config/appconstant");
 /* GET users listing. */
 router.post('/login', function(req, res, next) {
     var data = req.body.data;
-    var Userinfo = {email:data.username, password:crypt.encryptreturn(data.password), orgid:res.orgData.id};
+    var Userinfo = {email:data.username, password:data.password, orgid:res.orgData.id};
     Users.info(Userinfo,req,res,function(userDetails){
         if(Array.isArray(userDetails) && userDetails.length){
-            const token = jwt.sign({ email: userDetails[0].email,id:userDetails[0].physiotherapy_id,  name: userDetails[0].name }, appconstant.JWTTOKENUSER ,{ expiresIn: 60*60*5, algorithm: "HS256" });
-            var Userinfo = {statuscode:200,msg:"Login Successfull",email: userDetails[0].email,id:userDetails[0].physiotherapy_id,
+            const token = jwt.sign({ email: userDetails[0].email,id:userDetails[0].pt_id,  name: userDetails[0].name }, appconstant.JWTTOKENUSER ,{ expiresIn: 60*60*5, algorithm: "HS256" });
+            var Userinfo = {statuscode:200,msg:"Login Successfull",email: userDetails[0].email,id:userDetails[0].pt_id,
                 name: userDetails[0].name, reset_password:userDetails[0].reset_password, token:token};
             res.sendData = Userinfo;
             next();

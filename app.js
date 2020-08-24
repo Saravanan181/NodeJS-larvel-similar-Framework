@@ -152,9 +152,10 @@ function usrAuthToken(req, res, next) {
             }else{
 
                 res.userData = user;
-                console.log(res.userData);
+
                 userModel.validateUser(user,req,res,function(userDetails){
-                    console.log(userDetails[0]);
+                    console.log('kil');
+                    console.log(userDetails);
                 if(userDetails[0].email===user.email){
                     next();
                 }else{

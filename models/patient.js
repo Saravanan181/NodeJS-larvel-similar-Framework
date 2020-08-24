@@ -2,6 +2,7 @@ const sql = require("./mysqlconnect.js");
 var middleware = require('../middleware/reqresmiddleware');
 var crypthex = require("../endecrypt/crypthex");
 var logconf = require("../config/logconf");
+var appconstant = require("../config/appconstant");
 // constructor
 const patient = function(patient) {
 };
@@ -50,7 +51,13 @@ patient.search = (orgid, id, req, res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "SELECT * FROM `patient` WHERE `patient_id`  LIKE '%"+id+"%' and organization_id='"+orgid+"'";
+            var query = "SELECT CAST(AES_DECRYPT(`patient_name`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as patient_name," +
+                " CAST(AES_DECRYPT(`dob`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as dob," +
+                "  CAST(AES_DECRYPT(`time_post_stokes`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as time_post_stokes," +
+                "  CAST(AES_DECRYPT(`walking_speed`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as walking_speed," +
+                "  CAST(AES_DECRYPT(`notes`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as notes,gender,'9e2jeqjbw89323-3bj-32432hj' as patient_id " +
+                " FROM `patient` WHERE CONVERT(AES_DECRYPT(`patient_id`,'ambNodedsi3483jfdo8234') USING utf8) LIKE '%"+id+"%'" +
+                "  and organization_id='"+orgid+"' and status=1";
             console.log(query);
             connection.query(query,
                 [], (err, patientDetail) => {
