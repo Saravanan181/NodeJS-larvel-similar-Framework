@@ -9,10 +9,12 @@ var crypt = require("../endecrypt/crypt");
 router.post('/add', function(req, res, next) {
     var data = req.body.data;
 
-    data.patientid = data.first_name.charAt(0).toUpperCase()+data.last_name.charAt(0).toUpperCase()+String(("0" + (new Date().getMonth() + 1)).slice(-2))+String(("0" + new Date().getDate()).slice(-2))+String(new Date().getFullYear());
+    // data.patientid = data.first_name.charAt(0).toUpperCase()+data.last_name.charAt(0).toUpperCase()+String(("0" + (new Date().getMonth() + 1)).slice(-2))+String(("0" + new Date().getDate()).slice(-2))+String(new Date().getFullYear());
+
+    data.patientid = data.first_name.charAt(0).toUpperCase()+data.last_name.charAt(0).toUpperCase()+String(data.dob.replace('-','').replace('-',''));
 
     data.orgid = res.orgData.id;
-    // console.log(data);
+    console.log(data);
 
     patient.add(data,req,res,function(userDetails){
 
