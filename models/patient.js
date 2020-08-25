@@ -17,9 +17,14 @@ patient.add = (info,req,res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "INSERT INTO `patient`(`organization_id`,`patient_id`, `patient_name`, `gender`, `dob`, `time_post_stokes`, `walking_speed`, `notes`) " +
-                "VALUES ('"+info.orgid+"','"+info.patientid+"','"+info.name+"','"+info.gender+"','"+info.dob+"'," +
-                "'"+info.time_post_stroke+"','"+info.walking_speed+"','"+info.notes+"')";
+            var query = "INSERT INTO `patient`(`patient_uuid`,`organization_id`,`patient_id`, `first_name`, `last_name` , `gender`, `dob`, `time_post_stokes`, `walking_speed`, `notes`) " +
+                "VALUES ('6tc0bd9f-11c0-42da-975e-2a8ad9ebaedet','"+info.orgid+"'," +
+                "AES_ENCRYPT('"+info.patientid+"','"+appconstant.MYSQLENCRYPTKEY+"')," +
+                "AES_ENCRYPT('"+info.first_name+"','"+appconstant.MYSQLENCRYPTKEY+"')," +
+                "AES_ENCRYPT('"+info.last_name+"','"+appconstant.MYSQLENCRYPTKEY+"'),'"+info.gender+"'," +
+                "AES_ENCRYPT('"+info.dob+"','"+appconstant.MYSQLENCRYPTKEY+"')," +
+                "AES_ENCRYPT('"+info.time_post_stokes+"','"+appconstant.MYSQLENCRYPTKEY+"'),AES_ENCRYPT('"+info.walking_speed+"','"+appconstant.MYSQLENCRYPTKEY+"')" +
+                ",AES_ENCRYPT('"+info.notes+"','"+appconstant.MYSQLENCRYPTKEY+"'))";
             console.log(query);
             connection.query(query,
                 [], (err, userData) => {
@@ -51,11 +56,13 @@ patient.search = (orgid, id, req, res, callback) => {
             res.sendData = {"msg":'Server under maintaince',"statuscode":503};
             middleware.beforeresponse(req,res);
         }else{
-            var query = "SELECT CAST(AES_DECRYPT(`patient_name`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as patient_name," +
+            var query = "SELECT CAST(AES_DECRYPT(`first_name`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as first_name," +
+                " CAST(AES_DECRYPT(`last_name`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as last_name," +
                 " CAST(AES_DECRYPT(`dob`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as dob," +
                 "  CAST(AES_DECRYPT(`time_post_stokes`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as time_post_stokes," +
                 "  CAST(AES_DECRYPT(`walking_speed`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as walking_speed," +
-                "  CAST(AES_DECRYPT(`notes`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as notes,gender,'9e2jeqjbw89323-3bj-32432hj' as patient_id " +
+                "  CAST(AES_DECRYPT(`notes`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as notes,gender," +
+                " CAST(AES_DECRYPT(`patient_id`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as patient_id " +
                 " FROM `patient` WHERE CONVERT(AES_DECRYPT(`patient_id`,'ambNodedsi3483jfdo8234') USING utf8) LIKE '%"+id+"%'" +
                 "  and organization_id='"+orgid+"' and status=1";
             console.log(query);

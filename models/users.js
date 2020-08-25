@@ -53,7 +53,8 @@ users.resetpassword = (resetpassword,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "UPDATE `physiotherapist` SET `password`=AES_ENCRYPT('"+resetpassword.password+"','"+appconstant.MYSQLENCRYPTKEY+"'),`reset_password`=1 where email=AES_ENCRYPT('"+resetpassword.username+"','"+appconstant.MYSQLENCRYPTKEY+"') and organization_id =AES_ENCRYPT('"+resetpassword.orgid+"','"+appconstant.MYSQLENCRYPTKEY+"') ";
+            var query = "UPDATE `physiotherapist` SET `password`=AES_ENCRYPT('"+resetpassword.password+"','"+appconstant.MYSQLENCRYPTKEY+"'),`reset_password`=1 where email=AES_ENCRYPT('"+resetpassword.username+"','"+appconstant.MYSQLENCRYPTKEY+"') " +
+                "and organization_id ='"+resetpassword.orgid+"' ";
             console.log(query);
             connection.query(query,
                 [], (err, userData) => {
@@ -82,7 +83,7 @@ users.chpss = (changepassword,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
 
-            var query = "UPDATE `physiotherapist` SET `password`=AES_ENCRYPT('"+changepassword.password+"','"+appconstant.MYSQLENCRYPTKEY+"'),`reset_password`=0 where pt_id=AES_ENCRYPT('"+changepassword.id+"','"+appconstant.MYSQLENCRYPTKEY+"')  and organization_id =AES_ENCRYPT('"+changepassword.orgid+"','"+appconstant.MYSQLENCRYPTKEY+"') ";
+            var query = "UPDATE `physiotherapist` SET `password`=AES_ENCRYPT('"+changepassword.password+"','"+appconstant.MYSQLENCRYPTKEY+"'),`reset_password`=0 where pt_id='"+changepassword.id+"' and organization_id ='"+changepassword.orgid+"' ";
             console.log(query);
             connection.query( query,
                 [], (err, userData) => {

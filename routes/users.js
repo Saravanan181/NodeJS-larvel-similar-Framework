@@ -33,7 +33,7 @@ router.post('/passwordreset', function(req, res, next) {
 
     var resetpasswordD = common.randomstring(8,'#aA');
 
-    var resetpassword = {password:crypt.encryptreturn(resetpasswordD), username:data.username, orgid:res.orgData.id };
+    var resetpassword = {password:resetpasswordD, username:data.username, orgid:res.orgData.id };
     Users.resetpassword(resetpassword,req,res,function(userDetails){
 
         if(userDetails.changedRows==1){
@@ -63,7 +63,7 @@ router.post('/changepassword', function(req, res, next) {
 
     var resetpasswordD = data.password;
 
-    var resetpassword = {password:crypt.encryptreturn(resetpasswordD), id:res.userData.id, orgid:res.orgData.id};
+    var resetpassword = {password:resetpasswordD, id:res.userData.id, orgid:res.orgData.id};
     Users.chpss(resetpassword,req,res,function(userDetails){
 
         var Userinfo = {msg:"Password changed successfully",statuscode:200};
