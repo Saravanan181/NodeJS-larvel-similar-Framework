@@ -61,7 +61,7 @@ patient.search = (orgid, id, req, res, callback) => {
                 " CAST(AES_DECRYPT(`dob`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as dob," +
                 "  CAST(AES_DECRYPT(`time_post_stokes`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as time_post_stokes," +
                 "  CAST(AES_DECRYPT(`walking_speed`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as walking_speed," +
-                "  CAST(AES_DECRYPT(`notes`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as notes,gender," +
+                "  CAST(AES_DECRYPT(`notes`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as notes,gender,patient_uuid," +
                 " CAST(AES_DECRYPT(`patient_id`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as patient_id " +
                 " FROM `patient` WHERE CONVERT(AES_DECRYPT(`patient_id`,'ambNodedsi3483jfdo8234') USING utf8) LIKE '%"+id+"%'" +
                 "  and organization_id='"+orgid+"' and status=1";
