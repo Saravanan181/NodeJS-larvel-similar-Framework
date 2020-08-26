@@ -37,11 +37,11 @@ router.post('/passwordreset', function(req, res, next) {
     Users.resetpassword(resetpassword,req,res,function(userDetails){
 
         if(userDetails.changedRows==1){
-            var htmltext = 'Use the tempory password to login - '+resetpasswordD;
+            var password = resetpasswordD;
 
-            var dataarray = {mail:data.username,subject: 'Amble reset password' , html: htmltext};
+            var dataarray = {mail:data.username,subject: 'Amble reset password' , password: password};
 
-            var sendInfo = smtp.send(dataarray);
+            var sendInfo = smtp.sendresetpassword(dataarray);
             console.log('mail');
             var Userinfo = {msg:"Temporary password send to mail - "+common.censorEmail(data.username),statuscode:200};
         }else{

@@ -3,6 +3,10 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
+
+
+
+
 const jwt = require("jsonwebtoken");
 var logconf = require('./config/logconf');
 var bodyParser = require('body-parser');
@@ -27,6 +31,9 @@ var userModel = require('./models/users');
 var orgModel = require('./models/organization');
 
 var app = express();
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+app.set('view engine', 'ejs');
 var server = http.createServer(app);
 
 // const errorLog = require('./config/log').errorlog;
