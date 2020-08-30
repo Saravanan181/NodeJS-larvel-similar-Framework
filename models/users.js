@@ -131,4 +131,34 @@ users.validateUser = (info,req,res, callback) => {  console.log(info);
     });
 }
 
+
+users.sessionsetings = (uuid,req,res, callback) => {
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+
+            var query = "SELECT `patient_id`,CAST(AES_DECRYPT(`swing_time`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as swing_time," +
+                        "CAST(AES_DECRYPT(`hold_time`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as hold_time," +
+                        "rise_speed," +
+                        "CAST(AES_DECRYPT(`max_dorsiflexion_angle`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as max_dorsiflexion_angle,type" +
+                        "  FROM `session_settings` WHERE (`patient_id`='"+uuid+"') or (patient_id='' and type=1) ";
+console.log(query);
+            connection.query(query,
+                [], (err, sessionData) => {
+                if(err){
+                    var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
+                    logconf.writelog(logdata);
+                    res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                    middleware.beforeresponse(req,res);
+                }else{
+                    connection.release();
+                        callback(sessionData);
+        }
+        });
+        }
+    });
+}
+
 module.exports = users;

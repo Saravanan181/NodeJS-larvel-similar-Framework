@@ -3,6 +3,8 @@ var middleware = require('../middleware/reqresmiddleware');
 var crypthex = require("../endecrypt/crypthex");
 var logconf = require("../config/logconf");
 var appconstant = require("../config/appconstant");
+const { v1: uuidv1 } = require('uuid');
+
 // constructor
 const patient = function(patient) {
 };
@@ -18,7 +20,7 @@ patient.add = (info,req,res, callback) => {
             middleware.beforeresponse(req,res);
         }else{
             var query = "INSERT INTO `patient`(`patient_uuid`,`organization_id`,`patient_id`, `first_name`, `last_name` , `gender`, `dob`, `time_post_stokes`, `walking_speed`, `notes`) " +
-                "VALUES ('6tc0bd9f-11c0-42da-975e-2a8ad9ebaedet','"+info.orgid+"'," +
+                "VALUES ('"+uuidv1()+"','"+info.orgid+"'," +
                 "AES_ENCRYPT('"+info.patientid+"','"+appconstant.MYSQLENCRYPTKEY+"')," +
                 "AES_ENCRYPT('"+info.first_name+"','"+appconstant.MYSQLENCRYPTKEY+"')," +
                 "AES_ENCRYPT('"+info.last_name+"','"+appconstant.MYSQLENCRYPTKEY+"'),'"+info.gender+"'," +

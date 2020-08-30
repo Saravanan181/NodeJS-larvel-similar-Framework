@@ -10,6 +10,8 @@ var appconstant = require("../config/appconstant");
 
 /* GET users listing. */
 router.post('/login', function(req, res, next) {
+
+
     var data = req.body.data;
     var Userinfo = {email:data.username, password:data.password, orgid:res.orgData.id};
     Users.info(Userinfo,req,res,function(userDetails){
@@ -75,20 +77,46 @@ router.post('/changepassword', function(req, res, next) {
 });
 
 
+
+router.get('/sessionsettings/:uuid', function(req, res, next) {
+    var uuid = req.params.uuid;
+    Users.sessionsetings(uuid,req,res,function(sessionData){
+        var defaultSession = {}; var patientSession = {};
+        if (Array.isArray(sessionData) && sessionData.length) {
+            for (var pLoop = 0; pLoop < sessionData.length; pLoop++) {
+
+                if(sessionData[pLoop].type==1){
+                    defaultSession = {
+                        "swing_time" : sessionData[0].swing_time,
+                        "hold_time" : sessionData[0].hold_time,
+                        "rise_speed" : sessionData[0].rise_speed,
+                        "max_dorsiflexion_angle" : sessionData[0].max_dorsiflexion_angle
+                    }
+                }
+
+                if(sessionData[pLoop].type==2){
+                    patientSession = {
+                        "swing_time" : sessionData[0].swing_time,
+                        "hold_time" : sessionData[0].hold_time,
+                        "rise_speed" : sessionData[0].rise_speed,
+                        "max_dorsiflexion_angle" : sessionData[0].max_dorsiflexion_angle
+                    }
+                }
+            }
+        }
+        var patientInfo = {msg:"Patient session settings",statuscode:200,defaultsession: defaultSession,patientsession:patientSession};
+        res.sendData = patientInfo;
+        next();
+    });
+});
+
+
+
+
 router.get('/logout', function(req, res, next) {
-
-
     const authHeader = req.headers['authorization'];
     const token = authHeader && authHeader.split(' ')[1];
     // var userInfo = jwt.verify(token, 'nodeethos576asdas6');
-
-    if(jwt.destroy(token)){
-
-        console.log('done');
-
-    }
-
-
 });
 
 
