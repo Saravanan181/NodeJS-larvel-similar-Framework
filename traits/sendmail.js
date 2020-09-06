@@ -31,19 +31,10 @@ sendmail.sendresetpassword = (data) => {
         port: 465,
         secure: true, // true for 465, false for other ports
         auth: {
-            user: 'noreply.amble@gmail.com', // generated ethereal user
-            pass: 'cewcttxkusqrcubj' // generated ethereal password
+            user: '@gmail.com', // generated ethereal user
+            pass: '908661273217' // generated ethereal password
         }
     });
-
-
-    // var templateDir = path.join(__dirname, "../", 'template', 'resetpassword');
-    //
-    // var resetpasswordTemplate = new EmailTemplate(templateDir);
-    //
-    // var locals = {
-    //     tempassword: 'ssss' //dynamic data for bind into the template
-    // };
 
     readHTMLFile(path.resolve()+'/template/resetpassword/resetpassword.html', function(err, html) {
         var template = handlebars.compile(html);
@@ -55,7 +46,7 @@ sendmail.sendresetpassword = (data) => {
         var htmlToSend = template(replacements);
 
         let info = transporter.sendMail({
-                    from: 'noreply.amble@gmail.com', // sender address
+                    from: '@gmail.com', // sender address
                     to: data.mail, // list of receivers
                     subject: data.subject, // Subject line
                     // text: "Hello world?", // plain text body
@@ -65,31 +56,6 @@ sendmail.sendresetpassword = (data) => {
                 return info;
 
     });
-
-    // resetpasswordTemplate.render(locals, function (err, temp) {
-// console.log(temp);
-        // if (err) {
-        //     console.log('ssssss');
-        //     console.log("error", err);
-        //
-        // } else {
-        //
-        //     let info = transporter.sendMail({
-        //         from: 'noreply.amble@gmail.com', // sender address
-        //         to: data.mail, // list of receivers
-        //         subject: data.subject, // Subject line
-        //         // text: "Hello world?", // plain text body
-        //         html: temp.html // html body
-        //     });
-        //
-        //     return info;
-        //
-        // }
-
-    // });
-
-
-
 
 }
 

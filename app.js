@@ -3,10 +3,6 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var morgan = require('morgan');
-
-
-
-
 const jwt = require("jsonwebtoken");
 var logconf = require('./config/logconf');
 var bodyParser = require('body-parser');
@@ -17,18 +13,14 @@ var middleware = require('./middleware/reqresmiddleware');
 var http = require('http');
 
 //routes - controller
-var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 var enDecryptRouter = require('./routes/endecrypt');
 var logRouter = require('./routes/logaccess');
-var cmsRouter = require('./routes/cms');
-var patientRouter = require('./routes/patient');
-var organizationRouter = require('./routes/organization')
 
 
 //models
 var userModel = require('./models/users');
-var orgModel = require('./models/organization');
+
 
 var app = express();
 app.engine('html', require('ejs').renderFile);
@@ -56,21 +48,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded());
 
 
-// users details
-app.use('/users', orgAuthToken, usrAuthToken, middleware.afterrequest, usersRouter, middleware.beforeresponse);
-app.use('/patient',orgAuthToken, usrAuthToken, middleware.afterrequest, patientRouter, middleware.beforeresponse);
-// app.use('/keyinfo',authenticateToken,middleware.afterrequest, keyinfoRouter, middleware.beforeresponse);
-// app.use('/clinicalactivity',authenticateToken,middleware.afterrequest, clinicalactivityRouter, middleware.beforeresponse);
-// app.use('/onboarding',authenticateToken,middleware.afterrequest, onboardingRouter, middleware.beforeresponse);
-//keyinfo details
-
-
-
-
+// routes
+app.use('/users', usrAuthToken, middleware.afterrequest, usersRouter, middleware.beforeresponse);
 app.use('/crypt',enDecryptRouter);
-app.use('/organization',middleware.afterrequest, organizationRouter, middleware.beforeresponse);
 app.use('/log',logRouter);
-app.use('/cms',cmsRouter);
+
 
 
 // catch 404 and forward to error handler
@@ -88,47 +70,6 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
-
-function orgAuthToken(req, res, next) {
-
-        // console.log(req.headers);
-        if(!req.headers['proxy-authorization']){
-            res.sendData  = {"msg":"Organization Token Missing","statuscode":403};
-            middleware.beforeresponse(req,res);
-        }
-        //
-        const authHeader = req.headers['proxy-authorization'];
-        //
-        const token = authHeader && authHeader.split(' ')[1];
-        if (token == null){
-            res.sendData  = {msg:"Proxy-Authorization Not present",status_code:401};
-            middleware.beforeresponse(req,res);
-        }
-
-        jwt.verify(token, appconstant.JWTTOKENORGANIZATION , (err, orgData) => {
-            if (err){
-                res.sendData  = {"msg":"Invalid Token","statuscode":403};
-                middleware.beforeresponse(req,res);
-            }else{
-
-                res.orgData = orgData;
-                console.log(orgData);
-                orgModel.info(orgData.id,req,res,function(userDetails){
-                    if(userDetails[0].organization_id===orgData.id){
-                        next();
-                    }else{
-                        res.sendData  = {"msg":"Invalid Organization","statuscode":401};
-                        middleware.beforeresponse(req,res);
-                    }
-                });
-
-            }
-        // pass the execution off to whatever request the client intended
-    });
-
-}
-
 
 function usrAuthToken(req, res, next) {
 
