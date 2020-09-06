@@ -1,50 +1,102 @@
 const sql = require("./mysqlconnect.js");
-
+var middleware = require('../middleware/reqresmiddleware');
+var crypthex = require("../endecrypt/crypthex");
+var logconf = require("../config/logconf");
+var appconstant = require("../config/appconstant");
 
 // constructor
 const users = function(users) {
-    this.email = users.email;
-    this.password = users.password;
-    this.username = users.username;
+
 };
 
-users.info = (info,callback) => {
+users.info = (info,req,res, callback) => {
 
-    sql.query("SELECT * FROM users where email_id =? and otp=?",
-        [info.email, info.otp], (err, userData) => {
-        if(err) {
-            console.log("error: ", err);
-            result(err, null);
-            return;
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            var logdata = {"type":'error',"data":err,"customsg":  "database connection error" };
+            logconf.writelog(logdata);
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
         }else{
+            var query = "SELECT CAST(AES_DECRYPT(`name`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as name," +
+                        " CAST(AES_DECRYPT(`email`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as email " +
+                " FROM users where email = AES_ENCRYPT('"+info.email+"','"+appconstant.MYSQLENCRYPTKEY+"') " +
+                "and password=AES_ENCRYPT('"+info.password+"','"+appconstant.MYSQLENCRYPTKEY+"') " +
+                "and status=1";
+            console.log(query);
+            connection.query(query,
+                [], (err, userData) => {
 
-                callback(userData);
-
-
+                    if(err) {
+                        var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
+                        logconf.writelog(logdata);
+                        res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                        middleware.beforeresponse(req,res);
+                    }else{console.log(userData);
+                        connection.release();
+                        callback(userData);
+                    }
+                });
         }
     });
 
 }
 
-users.hospital = (info,callback) => {
+users.resetpassword = (resetpassword,req,res, callback) => {
 
-
-    sql.query("SELECT hl.hospital_id,hl.hospital_name FROM `add_physician_hospital` as aph " +
-        "left join hospital_list as hl on aph.hospital_id=hl.hospital_id " +
-        "WHERE aph.`physician_id`=?",
-        [info], (err, hospitalList) => {
+    sql.getConnection(function(err, connection) {
         if (err) {
-            console.log("error: ", err);
-            result(err, null);
-            return;
+            var logdata = {"type":'error',"data":err,"customsg":  "database connection error" };
+            logconf.writelog(logdata);
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
         }else{
 
-            callback(hospitalList);
+            var query = "UPDATE `users` SET `password`=AES_ENCRYPT('"+resetpassword.password+"','"+appconstant.MYSQLENCRYPTKEY+"') where email=AES_ENCRYPT('"+resetpassword.username+"','"+appconstant.MYSQLENCRYPTKEY+"') ";
 
+            console.log(query);
+            connection.query(query,
+                [], (err, userData) => {
+                if(err) {
+                    var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
+                    logconf.writelog(logdata);
+                    res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                    middleware.beforeresponse(req,res);
+                }else{
+                    connection.release();
+            callback(userData);
+        }
+        });
+        }
+    });
 
 }
-});
 
+users.validateUser = (info,req,res, callback) => {  console.log(info);
+    sql.getConnection(function(err, connection) {
+        if (err) {
+            res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+            middleware.beforeresponse(req,res);
+        }else{
+            var query = "SELECT CAST(AES_DECRYPT(`name`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as name," +
+                " CAST(AES_DECRYPT(`email`,'"+appconstant.MYSQLENCRYPTKEY+"') as CHAR) as email," +
+                " FROM users where user_id ='"+info.id+"' ";
+
+            console.log(query);
+            connection.query(query,
+                [], (err, userData) => {
+                if(err){
+                    var logdata = {"type":'error',"data":err,"customsg":  "Query error" };
+                    logconf.writelog(logdata);
+                    res.sendData = {"msg":'Server under maintaince',"statuscode":503};
+                    middleware.beforeresponse(req,res);
+                }else{
+                    connection.release();
+            callback(userData);
+        }
+        });
+        }
+    });
 }
 
 module.exports = users;

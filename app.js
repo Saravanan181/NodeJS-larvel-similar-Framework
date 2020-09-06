@@ -2,52 +2,41 @@ var createError = require('http-errors');
 var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var morgan = require('morgan');
 const jwt = require("jsonwebtoken");
+var logconf = require('./config/logconf');
+var bodyParser = require('body-parser');
+var appconstant = require('./config/appconstant');
 
-var indexRouter = require('./routes/index');
+//middleware
+var middleware = require('./middleware/reqresmiddleware');
+var http = require('http');
+
+//routes - controller
 var usersRouter = require('./routes/users');
 var enDecryptRouter = require('./routes/endecrypt');
-var keyinfoRouter = require('./routes/keyinfo');
+var logRouter = require('./routes/logaccess');
+
+
+//models
+var userModel = require('./models/users');
+
 
 var app = express();
+app.engine('html', require('ejs').renderFile);
+app.set('view engine', 'html');
+app.set('view engine', 'ejs');
+var server = http.createServer(app);
 
-var crypt = require("./endecrypt/crypt");
-
-
-//middleware decrypt before passing to controller
-var middlewarebeforerequest = function (req, res, next) {
-
-    if(req.body.data){
-        var data = req.body.data;
-        crypt.decrypt(data,function(decrypted){
-            req.body.data = JSON.parse(decrypted);
-            next()
-        });
-    }else{
-        next()
-    }
-
-}
-
-//middleware encrypt before passing to response
-var middlewareafterrequest = function (req, res) {
-
-    var data = res.sendData;res.sendData = '';
-    var statuscode = data.statuscode;
-
-    crypt.encrypt(JSON.stringify(data),function(encryptData){
-        res.status(statuscode).json({"data":encryptData});
-    });
-
-}
+// const errorLog = require('./config/log').errorlog;
+// const successlog = require('./config/log').successlog;
 
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(logger("AppServer"));
+app.use(morgan('combined'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
@@ -56,17 +45,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // app.use('/',authenticateToken, indexRouter);
 
-
-// users details
-app.use('/users',authenticateToken,middlewarebeforerequest, usersRouter, middlewareafterrequest);
-app.use('/keyinfo',authenticateToken,middlewarebeforerequest, usersRouter, middlewareafterrequest);
-
-//keyinfo details
+app.use(bodyParser.urlencoded());
 
 
-
-
+// routes
+app.use('/users', usrAuthToken, middleware.afterrequest, usersRouter, middleware.beforeresponse);
 app.use('/crypt',enDecryptRouter);
+app.use('/log',logRouter);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -84,47 +71,47 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+function usrAuthToken(req, res, next) {
 
-function authenticateToken(req, res, next) {
 
-// console.log(req.path);
-    if(req.path == '/login'){
+    var reqpath = req.path.split('/')[1];console.log(reqpath);
+    if(reqpath == 'passwordreset' || reqpath == 'login'){
         next()
     }else{
 
         // console.log(req.headers);
-
-        // Gather the jwt access token from the request header
-        var Userinfo = {msg:"Authentication Not present",status_code:401};
-
         if(!req.headers['authorization']){
-            res.json({"msg":"Token Missing","statuscode":403});
+            res.sendData  = {"msg":"User Token Missing","statuscode":403};
+            middleware.beforeresponse(req,res);
         }
         //
         const authHeader = req.headers['authorization'];
-
-        if(authHeader==''){
-            res.json({"msg":"Token Missing","statuscode":403});
-        }
         //
         const token = authHeader && authHeader.split(' ')[1];
         if (token == null){
-            var Userinfo = {msg:"Authentication Not present",status_code:401};
-            res.json(Userinfo);
+            res.sendData  = {msg:"Authorization Not present",status_code:401};
+            middleware.beforeresponse(req,res);
         }
 
-        // if(jwt.verify(token, 'nodeethos576asdas6')){
-        //     console.log('verified');
-        // }else{
-        //     console.log('not verified');
-        // }
-
-
-        jwt.verify(token, 'nodeethos576asdas6', (err, user) => {
+        jwt.verify(token, appconstant.JWTTOKENUSER , (err, user) => {
             if (err){
-                res.json({"msg":"Invalid Token","statuscode":403});
+                res.sendData  = {"msg":"Invalid Token","statuscode":403};
+                middleware.beforeresponse(req,res);
             }else{
-        next();
+
+                res.userData = user;
+
+                userModel.validateUser(user,req,res,function(userDetails){
+                    console.log('kil');
+                    console.log(userDetails);
+                if(userDetails[0].email===user.email){
+                    next();
+                }else{
+                    res.sendData  = {"msg":"Invalid User","statuscode":401};
+                    middleware.beforeresponse(req,res);
+                }
+            });
+
     }
         // pass the execution off to whatever request the client intended
     });
@@ -132,5 +119,10 @@ function authenticateToken(req, res, next) {
     }
 
 }
+
+server.listen(3000);
+server.on('listening', function() {
+    console.log('Server started on port %s at %s', server.address().port, server.address().address);
+});
 
 module.exports = app;

@@ -2,54 +2,57 @@ var express = require('express');
 var router = express.Router();
 const jwt = require("jsonwebtoken");
 const Users = require("../models/users.js");
+var common = require("../traits/common");
+var crypt = require("../endecrypt/crypt");
+var smtp = require("../traits/sendmail");
+var appconstant = require("../config/appconstant");
 
 
 /* GET users listing. */
 router.post('/login', function(req, res, next) {
 
+
     var data = req.body.data;
-    var Userinfo = {email:data.email, otp:data.otp};
-
-    Users.info(Userinfo,function(userDetails){
-
+    var Userinfo = {email:data.username, password:data.password};
+    Users.info(Userinfo,req,res,function(userDetails){
         if(Array.isArray(userDetails) && userDetails.length){
-
-            const token = jwt.sign({ username: userDetails[0].email_id,physican_id:userDetails[0].user_id,  role: 'doctor' }, 'nodeethos576asdas6',{ expiresIn: 60*60, algorithm: "HS256" });
-
-            var Userinfo = {statuscode:200,msg:"Login Successfull",physican_id:userDetails[0].user_id,email:userDetails[0].email_id, user_name:userDetails[0].user_name,
-                first_name:userDetails[0].first_name,last_name:userDetails[0].last_name, token:token};
-
+            const token = jwt.sign({ email: userDetails[0].email,id:userDetails[0].pt_id,  name: userDetails[0].name }, appconstant.JWTTOKENUSER ,{ expiresIn: 60*60*5, algorithm: "HS256" });
+            var Userinfo = {statuscode:200,msg:"Login Successfull",email: userDetails[0].email,id:userDetails[0].user_id,
+                name: userDetails[0].name, token:token};
             res.sendData = Userinfo;
-
             next();
         }else{
-
             var Userinfo = {msg:"User Not Found",statuscode:401};
             res.sendData = Userinfo;
-
             next();
         }
-
     });
-
 });
 
-router.get('/hospitals', function(req, res, next) {
 
+router.post('/passwordreset', function(req, res, next) {
+    var data = req.body.data;
 
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    var userInfo = jwt.verify(token, 'nodeethos576asdas6');
+    var resetpasswordD = common.randomstring(8,'#aA');
 
-    Users.hospital(userInfo.physican_id,function(hospitalList){
+    var resetpassword = {password:resetpasswordD, username:data.username, orgid:res.orgData.id };
+    Users.resetpassword(resetpassword,req,res,function(userDetails){
 
-            var HospitalList = {statuscode:200,msg:"Hospital List",list:hospitalList};
-            res.sendData = HospitalList;
-            next();
-
+        if(userDetails.changedRows==1){
+            var password = resetpasswordD;
+            var dataarray = {mail:data.username,subject: 'Reset password' , password: password};
+            var sendInfo = smtp.sendresetpassword(dataarray);
+            console.log('mail');
+            var Userinfo = {msg:"Temporary password send to mail - "+common.censorEmail(data.username),statuscode:200};
+        }else{
+            var Userinfo = {msg:"Please try to reset again with proper User/Organization",statuscode:403};
+        }
+        res.sendData = Userinfo;
+        next();
     });
-
 });
+
+
 
 
 module.exports = router;

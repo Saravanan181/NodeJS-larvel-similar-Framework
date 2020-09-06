@@ -5,25 +5,21 @@ var crypt = require("../endecrypt/crypt.js");
 
 /* GET home page. */
 router.post('/encrypt', function(req, res, next) {
-
-
     var data = JSON.stringify(req.body.data);
     crypt.encrypt(data,function(encryptData){
+
         res.send(encryptData);
     });
-
-
 });
 
 
 router.post('/decrypt', function(req, res, next) {
-
     var data = req.body.data;
-    console.log(data);
+    console.log('sssdsdfds');
     crypt.decrypt(data,function(decryptData){
+        console.log(decryptData);
         res.send(decryptData);
     });
-
 });
 
 module.exports = router;
